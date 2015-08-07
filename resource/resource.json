@@ -1,0 +1,57 @@
+{
+	"resources": [
+		{
+			"name": "bgImage","type": "image","url": "assets/bg.jpg"
+		},
+		{
+			"name": "egretIcon","type": "image","url": "assets/egret_icon.png"
+		},
+		{
+			"name": "description","type": "json","url": "config/description.json"
+		},
+		{
+			"name":"mid_100000001_sm","type":"json","url":"avatars/output/mid_100000001.sm"
+		},
+		{
+			"name":"mid_100000001_json","type":"sheet","url":"avatars/clothes/mid_100000001.json"
+		},
+		{
+			"name":"mid_100000001_png","type":"image","url":"avatars/clothes/mid_100000001.png"
+		},
+
+		{
+			"name":"mid_100000002_sm","type":"json","url":"avatars/output/mid_100000002.sm"
+		},
+		{
+			"name":"mid_100000002_json","type":"sheet","url":"avatars/clothes/mid_100000002.json"
+		},
+		{
+			"name":"mid_100000002_png","type":"image","url":"avatars/clothes/mid_100000002.png"
+		},
+
+		{
+			"name":"mid_100000003_sm","type":"json","url":"avatars/output/mid_100000003.sm"
+		},
+		{
+			"name":"mid_100000003_json","type":"sheet","url":"avatars/clothes/mid_100000003.json"
+		},
+		{
+			"name":"mid_100000003_png","type":"image","url":"avatars/clothes/mid_100000003.png"
+		},
+
+		{
+			"name":"mid_100000004_sm","type":"json","url":"avatars/output/mid_100000004.sm"
+		},
+		{
+			"name":"mid_100000004_json","type":"sheet","url":"avatars/clothes/mid_100000004.json"
+		},
+		{
+			"name":"mid_100000004_png","type":"image","url":"avatars/clothes/mid_100000004.png"
+		}
+	],
+	"groups": [
+		{
+			"name": "preload","keys": "bgImage,egretIcon"
+		}
+	]
+}
