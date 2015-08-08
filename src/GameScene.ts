@@ -9,6 +9,7 @@ class GameScene extends engine.Scene {
         if (this.isReady == false) {
             return;
         }
-        this.sceneMoveTo(evt.stageX-this.x, evt.stageY-this.y);
+        this.mouseDownPoint.setTo(evt.stageX-this.x, evt.stageY-this.y)
+        this.sceneMoveTo(this.mouseDownPoint.x, this.mouseDownPoint.y);
     }
 }

@@ -11,8 +11,12 @@ module engine {
         public bottomLayer:egret.Sprite;
         public itemLayer:egret.Sprite;
         public mapLayer:MapLayer;
+
         public mapData:TileMapData;
         public nodeTree:NodeTree;
+        public mainChar:MainChar;
+
+        public mouseDownPoint:egret.Point;
 
         private container:egret.DisplayObjectContainer;
         private focusP:egret.Point;
@@ -21,6 +25,7 @@ module engine {
         constructor() {
             super();
             Scene.scene = this;
+            this.mouseDownPoint = new egret.Point();
             this.init();
         }
 
@@ -113,6 +118,9 @@ module engine {
             this.addChild(this.topLayer);
 
             this.mapLayer = new MapLayer();
+
+            this.mainChar = new engine.MainChar();
+            this.addItem(this.mainChar, SceneConst.MIDDLE_LAYER);
         }
 
         protected _EngineMouseDownFunc_(evt:egret.TouchEvent):void {
