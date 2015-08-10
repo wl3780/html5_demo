@@ -104,26 +104,45 @@ module engine {
 			}
 		}
 
-		private static cleanPath(array:Array<any>):Array<any> {
+		public static pathCutter(array:Array<egret.Point>, size:number = 2):Array<any> {
+			var tmp:Array<egret.Point> = null;
+			var arr:Array<Array<egret.Point>> = [];
 			var i:number = 0;
-			var prev_p:egret.Point = null;
-			var curr_p:egret.Point = null;
-			var next_p:egret.Point = null;
-			var k1:number = 0;
-			var k2:number = 0;
-			if(array.length > 2)
-			{
-				i = 1;
-				while(i < (array.length - 1))
-				{
+			while(i < array.length) {
+				if((i % size) == 0) {
+					tmp = [];
+					if(arr.length > 0) {
+						tmp.push(array[(i - 1)]);
+					}
+					arr.push(tmp);
+				}
+				tmp.push(array[i]);
+				i++;
+			}
+			var j:number = 0;
+			while(j < arr.length) {
+				arr[j] = TileAstar.cleanPath(arr[j]);
+				j++;
+			}
+			return arr;
+		}
+
+		public static cleanPath(array:Array<egret.Point>):Array<egret.Point> {
+			if(array.length > 2) {
+				var prev_p:egret.Point = null;
+				var curr_p:egret.Point = null;
+				var next_p:egret.Point = null;
+				var k1:number = 0;
+				var k2:number = 0;
+				var i:number = 1;
+				while(i < (array.length - 1)) {
 					prev_p = array[(i - 1)];
 					curr_p = array[i];
 					next_p = array[(i + 1)];
 					k1 = ((prev_p.y - curr_p.y) / (prev_p.x - curr_p.x));
 					k2 = ((curr_p.y - next_p.y) / (curr_p.x - next_p.x));
-					if(k1 == k2)
-					{
-						array.splice(i,1);
+					if(k1 == k2) {
+						array.splice(i, 1);
 						i--;
 					}
 					i++;
@@ -132,7 +151,7 @@ module engine {
 			return array;
 		}
 
-		public getPath(source:Map, start_x:number, start_y:number, end_x:number, end_y:number, isFineNear:boolean = true, breakSetp:number = 10000):Array<any> {
+		public getPath(source:Map, start_x:number, start_y:number, end_x:number, end_y:number, isFineNear:boolean = true, breakStep:number = 10000):Array<any> {
 			var t:number = egret.getTimer();
 			this.reSet();
 
@@ -151,7 +170,7 @@ module engine {
 			this.nonce.parent = this.nonce;
 			this.closePath.set(this.nonce.key, this.nonce);
 			while(this.isFinish) {
-				this.getScale9Grid(source, this.nonce, this.endPoint, breakSetp);
+				this.getScale9Grid(source, this.nonce, this.endPoint, breakStep);
 			}
 			var array:Array<any> = this.cleanArray();
 			return array;
@@ -321,36 +340,6 @@ module engine {
 				this.isFinish = false;
 			}
 			this.G = this.nonce.G;
-		}
-
-		public pathCutter(array:Array<any>,size:number = 2):Array<any>
-		{
-			var tmp:Array<any> = null;
-			var i:number = 0;
-			var j:number = 0;
-			var arr:Array<any> = [];
-			i = 0;
-			while(i < array.length)
-			{
-				if((i % size) == 0)
-				{
-					tmp = [];
-					if(arr.length > 0)
-					{
-						tmp.push(array[(i - 1)]);
-					}
-					arr.push(tmp);
-				}
-				tmp.push(array[i]);
-				i++;
-			}
-			j = 0;
-			while(j < arr.length)
-			{
-				arr[j] = TileAstar.cleanPath(arr[j]);
-				j++;
-			}
-			return arr;
 		}
 
 		private cleanArray():Array<egret.Point> {

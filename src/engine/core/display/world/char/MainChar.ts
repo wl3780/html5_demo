@@ -1,5 +1,5 @@
 module engine {
-	export class MainChar extends egret.Sprite {
+	export class MainChar extends Char {
 
 		public constructor() {
 			super();

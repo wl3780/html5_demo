@@ -1,7 +1,10 @@
 class GameScene extends engine.Scene {
 
+    public static scene:GameScene;
+
     public constructor() {
         super();
+        GameScene.scene = this;
     }
 
     protected _EngineMouseDownFunc_(evt:egret.TouchEvent):void {
@@ -10,6 +13,6 @@ class GameScene extends engine.Scene {
             return;
         }
         this.mouseDownPoint.setTo(evt.stageX-this.x, evt.stageY-this.y)
-        this.sceneMoveTo(this.mouseDownPoint.x, this.mouseDownPoint.y);
+        MainCharWalkManager.getInstance().mainCharWalk(this.mouseDownPoint, null);
     }
 }

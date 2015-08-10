@@ -1,7 +1,7 @@
 module engine {
 	export class Tile {
 
-		private static _tileHash_:Array<Tile> = new Array<Tile>();
+		private static _tileHash_:Array<Tile> = [];
 
 		public type:number = 0;
 		public initValue:number = 0;
@@ -69,7 +69,9 @@ module engine {
 		}
 
 		public dispose():void {
-			Tile._tileHash_.push(this);
+			if (Tile._tileHash_.indexOf(this) == -1) {
+				Tile._tileHash_.push(this);
+			}
 		}
 
 	}

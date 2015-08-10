@@ -15,7 +15,7 @@ module engine {
 
 		public constructor() {
 			super();
-			this._nodes = Map<string, INoder>();
+			this._nodes = new Map<string, INoder>();
 		}
 
 		public setUp(tid:string, oid:string, rect:egret.Rectangle, depth:number) {

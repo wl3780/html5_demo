@@ -13,6 +13,6 @@ module engine {
 
 
         /** 四叉树id */
-        public static SCENE_ITEM_NODER:String = "SCENE_ITEM_NODER";
+        public static SCENE_ITEM_NODER:string = "SCENE_ITEM_NODER";
     }
 }

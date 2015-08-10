@@ -61,21 +61,20 @@ module engine {
 
         public addItem(item:ISceneItem, layer:string):void {
             item.layer = layer;
-//            var dis:egret.DisplayObject = <egret.DisplayObject>item;
-//            switch (layer) {
-//                case SceneConst.TOP_LAYER:
-//                    this.topLayer.addChild(dis);
-//                    break;
-//                case SceneConst.ITEM_LAYER:
-//                    this.itemLayer.addChild(dis);
-//                    break;
-//                case SceneConst.MIDDLE_LAYER:
-//                    this.middleLayer.addChild(dis);
-//                    break;
-//                case SceneConst.BOTTOM_LAYER:
-//                    this.bottomLayer.addChild(dis);
-//                    break;
-//            }
+            switch (layer) {
+                case SceneConst.TOP_LAYER:
+                    this.topLayer.addChild(item.content);
+                    break;
+                case SceneConst.ITEM_LAYER:
+                    this.itemLayer.addChild(item.content);
+                    break;
+                case SceneConst.MIDDLE_LAYER:
+                    this.middleLayer.addChild(item.content);
+                    break;
+                case SceneConst.BOTTOM_LAYER:
+                    this.bottomLayer.addChild(item.content);
+                    break;
+            }
         }
 
         public removeItem(item:ISceneItem):void {
@@ -132,7 +131,8 @@ module engine {
         }
 
         protected enterFrameFunc(evt:egret.TimerEvent):void {
-
+            this.mainChar.loopMove();
+            this.sceneMoveTo(this.mainChar.x, this.mainChar.y);
         }
 
         protected getCameraFocusTo(px:number, py:number, valueP:egret.Point):egret.Point {

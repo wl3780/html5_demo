@@ -12,6 +12,10 @@ module engine {
             return TileGroup._instance;
         }
 
+        public get hash():Map<string, Tile> {
+            return this._hash;
+        }
+
         public put(key:string, tile:Tile) {
             this._hash.set(key, tile);
         }

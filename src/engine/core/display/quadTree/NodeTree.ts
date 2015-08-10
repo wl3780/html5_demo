@@ -27,7 +27,7 @@ module engine {
 			}
 		}
 
-		public get nodes():Map {
+		public get nodes():Map<string, NodeRect> {
 			return this._hash;
 		}
 
@@ -61,7 +61,7 @@ module engine {
 		public find(rect:egret.Rectangle, exact:boolean = false, definition:number = 20):Array<any> {
 			if(this.initialized) {
 				var result:Array<any> = [];
-				var dic:Map = new Map();
+				var dic:Map<string, INoder> = new Map<string, INoder>();
 				if (definition < NodeTree.minSize) {
 					definition = NodeTree.minSize
 				}
@@ -72,19 +72,17 @@ module engine {
 			return null;
 		}
 
-		private cycleFind(arr:Array<any>, dic:Map, node:NodeRect, rect:egret.Rectangle, level:number, exact:boolean) {
+		private cycleFind(arr:Array<any>, dic:Map<string, INoder>, node:NodeRect, rect:egret.Rectangle, level:number, exact:boolean) {
 			if(node == null) {
 				return ;
 			}
 			if(rect.intersects(node.rect) && node.length > 0) {
 				if(node.depth == level) {
-					var display:egret.DisplayObject;
 					var bounds:egret.Rectangle;
 					node.dic.forEach(noder => {
-						display = <egret.DisplayObject>noder;
-						if (display && display.stage) {
+						if (noder && noder.stage) {
 							if(exact) {
-								bounds = display.getBounds(bounds);
+								bounds = noder.getBounds(bounds);
 								if(rect.intersects(bounds)) {
 									if(dic.has(noder.id) == false) {
 										dic.set(noder.id, noder);
@@ -136,6 +134,7 @@ module engine {
 				if(size <= minSize) {
 					return i;
 				}
+                i++;
 			}
 			return -1;
 		}

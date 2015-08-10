@@ -8,5 +8,7 @@ module engine {
         scene_id:string;
 
         stageIntersects():boolean;
+
+        content?:egret.DisplayObject;
     }
 }

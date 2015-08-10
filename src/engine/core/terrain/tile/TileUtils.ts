@@ -26,6 +26,20 @@ module engine {
 			return result;
 		}
 
+		public static toPixelsCenter(x:number, y:number, resultValue:egret.Point=null):egret.Point {
+			var tx:number = (x / TileConst.TILE_WIDTH >> 0) * TileConst.TILE_WIDTH + TileConst.WH;
+			var ty:number = (y / TileConst.TILE_HEIGHT >> 0) * TileConst.TILE_HEIGHT + TileConst.HH;
+			if(resultValue) {
+				resultValue.x = tx;
+				resultValue.y = ty;
+				return resultValue;
+			}
+			var result:egret.Point = engine.Engine.getPoint();
+			result.x = tx;
+			result.y = ty;
+			return result;
+		}
+
 	}
 }
 

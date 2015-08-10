@@ -6,7 +6,6 @@ module engine {
 		private hash:Map<string, NodeTree>;
 
 		public constructor() {
-			super();
 			this.hash = new Map<string, NodeTree>();
 		}
 

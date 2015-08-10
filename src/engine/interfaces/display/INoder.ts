@@ -9,6 +9,8 @@ module engine {
 
         tid?:string;
 
+        stage?:egret.Stage;
+
         isActive?:boolean;
 
         node:INodeRect;
@@ -16,5 +18,7 @@ module engine {
         activate():void;
 
         unactivate():void;
+
+        getBounds(resultRect?:egret.Rectangle, calculateAnchor?:boolean): egret.Rectangle;
     }
 }
