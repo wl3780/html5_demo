@@ -19,7 +19,7 @@ class MainCharWalkManager {
         return MainCharWalkManager._instance;
     }
 
-    public mainCharWalk(p_tar:egret.Point, callback:Function, breakStep:number=1500) {
+    public mainCharMove(p_tar:egret.Point, callback:Function, breakStep:number=1500) {
         this.walkPathFragments.length = 0;
         this.walkEndFunc = callback;
         var mainChar:engine.MainChar = GameScene.scene.mainChar;
@@ -33,12 +33,7 @@ class MainCharWalkManager {
         } else {
             array = this.getPath(p_cur, p_tar, breakStep);
         }
-        this.pathCutter(array);
-        if (this.walkPathFragments.length) {
-            this.walkNextPart();
-        } else {
-            this.totalWalkEnd();
-        }
+        this.doMove(array);
     }
 
     public getPath(p_start:egret.Point, p_end:egret.Point, breakStep:number=1500):Array<egret.Point> {
@@ -59,7 +54,7 @@ class MainCharWalkManager {
                 }
                 var p_head:egret.Point = ret[0];
                 if (tp_start.equals(engine.TileUtils.pixelsToTile(p_head.x, p_head.y))) {
-                    ret[0] = p_head;
+                    ret[0] = p_start;
                 }
             }
             engine.TileAstar.cleanPath(ret);
@@ -81,6 +76,31 @@ class MainCharWalkManager {
             idx++;
         }
         return true;
+    }
+
+    private doMove(array:Array<egret.Point>) {
+        //this.pathCutter(array);
+        for (var i=1; i<array.length-1; i++) {
+            var p1:egret.Point = engine.TileUtils.toPixelsCenter(array[i-1].x, array[i-1].y);
+            var p2:egret.Point = engine.TileUtils.toPixelsCenter(array[i].x, array[i].y);
+            var p3:egret.Point = engine.TileUtils.toPixelsCenter(array[i+1].x, array[i+1].y);
+            var k1:number = (p2.y - p1.y) / (p2.x - p1.x);
+            var k2:number = (p3.y - p2.y) / (p3.x - p2.x);
+            if (k1 == k2) {
+                array.splice(i, 1);
+                i--;
+            }
+        }
+        if (array.length >= 2) {
+            this.walkPathFragments = engine.TileAstar.pathCutter(array, 3);
+        } else {
+            this.walkPathFragments = [array];
+        }
+        if (this.walkPathFragments.length) {
+            this.walkNextPart();
+        } else {
+            this.totalWalkEnd();
+        }
     }
 
     private pathCutter(array:Array<egret.Point>, size:number=140, _arg_3:number=350):void {

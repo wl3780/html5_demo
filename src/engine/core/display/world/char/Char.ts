@@ -10,6 +10,7 @@ module engine {
 		public scene_id:string;
 
 		public point:egret.Point;
+		public tilePoint:egret.Point;
 		public enabled:boolean;
 		public isDisposed:boolean;
 
@@ -25,6 +26,12 @@ module engine {
 		public constructor() {
 			super();
 			this.point = Engine.getPoint();
+			this.tilePoint = Engine.getPoint();
+		}
+
+		public changeMoveAction() {
+			this.checkAndSetDir();
+			this.setMoveSpeed();
 		}
 
 		public moveTo(x:number, y:number) {
@@ -85,11 +92,13 @@ module engine {
 		public _setX(value:number) {
 			super._setX(value);
             this.point.x = value;
+			this.tilePoint.x = this.x / TileConst.TILE_WIDTH >> 0;
 		}
 
 		public _setY(value:number) {
 			super._setY(value);
             this.point.y = value;
+			this.tilePoint.y = this.y / TileConst.TILE_HEIGHT >> 0;
 		}
 
 		public get dir():number {
@@ -115,7 +124,7 @@ module engine {
 
 		protected _tarMove_() {
 			var dis:number = egret.Point.distance(this.point, this._tarPoint_);
-			var time:number = dis / this._speed_ * 1000;
+			var time:number = (dis / this._speed_) * 1000;
 			if (this._totalTime_ >= time) {
 				this._totalTime_ -= time;
 			} else {
@@ -123,9 +132,9 @@ module engine {
 				this._totalTime_ = 0;
 			}
 			if (time > 0) {
-				var vs:number = this._speed_ * time / 1000;
-				var vd:number = vs / dis;
-				var p:egret.Point = egret.Point.interpolate(this._tarPoint_, this.point, vd);
+				var subDis:number = this._speed_ * (time / 1000);
+				var f:number = subDis / dis;
+				var p:egret.Point = egret.Point.interpolate(this._tarPoint_, this.point, f);
 				this.x = p.x;
 				this.y = p.y;
 				dis = egret.Point.distance(this.point, this._tarPoint_);
@@ -136,13 +145,11 @@ module engine {
 				this._totalTime_ = 0;
 				if (this._movePath_.length) {
 					this._tarPoint_ = this._movePath_.shift();
+					this.changeMoveAction();
 				} else {
 					this._tarPoint_ = null;
 					this._CharMoveEnd_();
 				}
-			}
-			if (this._totalTime_ > 0) {
-				this._tarMove_();
 			}
 		}
 

@@ -42,7 +42,7 @@ class GameScene extends engine.Scene {
             return;
         }
         this.mouseDownPoint.setTo(evt.stageX-this.x, evt.stageY-this.y);
-        MainCharWalkManager.getInstance().mainCharWalk(this.mouseDownPoint, null);
+        MainCharWalkManager.getInstance().mainCharMove(this.mouseDownPoint, null);
         if (!this._isDraw) {
             this._isDraw = true;
             //this.sceneDraw();

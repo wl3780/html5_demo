@@ -104,14 +104,14 @@ module engine {
 			}
 		}
 
-		public static pathCutter(array:Array<egret.Point>, size:number = 2):Array<any> {
+		public static pathCutter(array:Array<egret.Point>, size:number = 2):Array<Array<egret.Point>> {
 			var tmp:Array<egret.Point> = null;
 			var arr:Array<Array<egret.Point>> = [];
 			var i:number = 0;
 			while(i < array.length) {
 				if((i % size) == 0) {
 					tmp = [];
-					if(arr.length > 0) {
+					if(i > 0) {
 						tmp.push(array[(i - 1)]);
 					}
 					arr.push(tmp);
@@ -139,8 +139,8 @@ module engine {
 					prev_p = array[(i - 1)];
 					curr_p = array[i];
 					next_p = array[(i + 1)];
-					k1 = ((prev_p.y - curr_p.y) / (prev_p.x - curr_p.x));
-					k2 = ((curr_p.y - next_p.y) / (curr_p.x - next_p.x));
+					k1 = (prev_p.y - curr_p.y) / (prev_p.x - curr_p.x);
+					k2 = (curr_p.y - next_p.y) / (curr_p.x - next_p.x);
 					if(k1 == k2) {
 						array.splice(i, 1);
 						i--;
@@ -328,7 +328,7 @@ module engine {
 				i++;
 			}
 			this.nonce = tad;
-			this.openArray.splice(index,1);
+			this.openArray.splice(index, 1);
 			var key:string = this.nonce.key;
 			if(this.closePath.has(key) == false) {
 				this.closePath.set(key, this.nonce);
