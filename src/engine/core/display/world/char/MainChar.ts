@@ -8,10 +8,6 @@ module engine {
 			this.graphics.endFill();
 		}
 
-		public get dir():number {
-			return DirConst.BOTTOM;
-		}
-
 	}
 }
 

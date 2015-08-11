@@ -45,6 +45,8 @@ module engine {
         public setupReady():void {
             this.isReady = true;
             this.mapData = this.mapLayer.mapData;
+//            this.mainChar.x = -this.mapData.pixel_x;
+//            this.mainChar.y = -this.mapData.pixel_y;
         }
 
         public changeScene(scene_id:string):void {
@@ -118,7 +120,7 @@ module engine {
 
             this.mapLayer = new MapLayer();
 
-            this.mainChar = new engine.MainChar();
+            this.mainChar = new MainChar();
             this.addItem(this.mainChar, SceneConst.MIDDLE_LAYER);
         }
 
@@ -131,8 +133,10 @@ module engine {
         }
 
         protected enterFrameFunc(evt:egret.TimerEvent):void {
-            this.mainChar.loopMove();
-            this.sceneMoveTo(this.mainChar.x, this.mainChar.y);
+            if (this.isReady) {
+                this.mainChar.loopMove();
+                this.sceneMoveTo(this.mainChar.x, this.mainChar.y);
+            }
         }
 
         protected getCameraFocusTo(px:number, py:number, valueP:egret.Point):egret.Point {

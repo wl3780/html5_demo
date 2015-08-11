@@ -82,14 +82,14 @@ module engine {
 			return this;
 		}
 
-		public set x(value:number) {
-			this._setX(value);
-			TileUtils.toPixelsCenter(this.x, this.y, this.point);
+		public _setX(value:number) {
+			super._setX(value);
+            this.point.x = value;
 		}
 
-		public set y(value:number) {
-			this._setY(value);
-			TileUtils.toPixelsCenter(this.x, this.y, this.point);
+		public _setY(value:number) {
+			super._setY(value);
+            this.point.y = value;
 		}
 
 		public get dir():number {

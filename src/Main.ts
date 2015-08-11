@@ -44,7 +44,10 @@ class Main extends egret.DisplayObjectContainer {
     private createGameScene(): void {
         this.scene = new GameScene();
         this.scene.setup(this);
+        this.scene.mainChar.x = 2500;
+        this.scene.mainChar.y = 1300;
         this.scene.changeScene("10321");
+//        this.scene.changeScene("10001");
     }
 
 }

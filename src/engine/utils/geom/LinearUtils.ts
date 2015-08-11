@@ -1,8 +1,8 @@
 module engine {
 	export class LinearUtils {
 
-		public static _radian_:Number = 180 / Math.PI;
-		public static _angle_:Number = Math.PI / 180;
+		public static _radian_:number = 180 / Math.PI;
+		public static _angle_:number = Math.PI / 180;
 
 		//public static lineAttck(startPoint:egret.Point, endPoint:egret.Point, interval:number = 80):Array<any> {
 		//	if(!startPoint || !endPoint) {

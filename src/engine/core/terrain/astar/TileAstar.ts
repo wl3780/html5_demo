@@ -23,7 +23,7 @@ module engine {
 		private G:number = 0;
 		private closeLength:number = 0;
 
-		private static loopRect(source:Map, indexPt:egret.Point, loopNum:number, type:number):egret.Point {
+		private static loopRect(source:Map<string, Tile>, indexPt:egret.Point, loopNum:number, type:number):egret.Point {
 			var mainDir:number = LinearUtils.getDirection(Scene.scene.mainChar.x, Scene.scene.mainChar.y, Scene.scene.mouseDownPoint.x, Scene.scene.mouseDownPoint.y);
 			var list:Array<any> = [];
 
@@ -75,7 +75,7 @@ module engine {
 			return null;
 		}
 
-		private static fillFaceTile(list:Array<any>, px:number, py:number, source:Map, indexPt:egret.Point, type:number, mainDir:number) {
+		private static fillFaceTile(list:Array<any>, px:number, py:number, source:Map<string, Tile>, indexPt:egret.Point, type:number, mainDir:number) {
 			var key:string = px + "|" + py;
 			var tile:Tile = source.get(key);
 			if (tile && tile.type != 0 && tile.type != type) {
@@ -151,7 +151,7 @@ module engine {
 			return array;
 		}
 
-		public getPath(source:Map, start_x:number, start_y:number, end_x:number, end_y:number, isFineNear:boolean = true, breakStep:number = 10000):Array<any> {
+		public getPath(source:Map<string, Tile>, start_x:number, start_y:number, end_x:number, end_y:number, isFineNear:boolean = true, breakStep:number = 10000):Array<any> {
 			var t:number = egret.getTimer();
 			this.reSet();
 
@@ -172,7 +172,8 @@ module engine {
 			while(this.isFinish) {
 				this.getScale9Grid(source, this.nonce, this.endPoint, breakStep);
 			}
-			var array:Array<any> = this.cleanArray();
+			var array:Array<egret.Point> = this.cleanArray();
+            console.log("*****************寻路时间：", (egret.getTimer() - t), "路径长: ", array.length, "*******************", "\n\n");
 			return array;
 		}
 
@@ -180,7 +181,7 @@ module engine {
 			this.isFinish = false;
 		}
 
-		private loopCheck(source:Map, indexPt:egret.Point, level:number):egret.Point {
+		private loopCheck(source:Map<string, Tile>, indexPt:egret.Point, level:number):egret.Point {
 			var type:number = (this.mode == 1) ? 2 : 1;
 			var key_pt:string = indexPt.x + "|" + indexPt.y;
 			if((source.has(key_pt) == false) || (source.get(key_pt).type == 0) || (source.get(key_pt).type == type)) {
@@ -264,7 +265,7 @@ module engine {
 			}
 		}
 
-		private getScale9Grid(source:Map, data:TileAstarData, endPoint:egret.Point, breakSetp:number) {
+		private getScale9Grid(source:Map<string, Tile>, data:TileAstarData, endPoint:egret.Point, breakSetp:number) {
 			var pt:egret.Point = data.pt;
 			var x:number = pt.x;
 			var y:number = pt.y;

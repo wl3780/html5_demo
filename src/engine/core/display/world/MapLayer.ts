@@ -137,7 +137,7 @@ module engine {
         }
         private onMiniMapError(evt:egret.IOErrorEvent):void {
             console.error("小地图加载失败：" + this.scene_id);
-            //this.loadMiniMap();
+            this.loadMiniMap();
         }
 
         private timeFunc(evt:egret.TimerEvent):void {
@@ -271,7 +271,7 @@ module engine {
             if (this._limitIndex_ < this._general_limitIndex_) {
                 this._limitIndex_ ++;
             }
-            console.log(tmpLoader.name + "加载成功");
+            //console.log(tmpLoader.name + "加载成功");
         }
         private onErrorFunc(evt:egret.IOErrorEvent):void {
             var tmpLoader:ProtoURLLoader = evt.target;

@@ -9,6 +9,7 @@ class MainCharWalkManager {
 
     public constructor() {
         this.astar = new engine.TileAstar();
+        this.walkPathFragments = [];
     }
 
     public static getInstance():MainCharWalkManager {
@@ -19,6 +20,7 @@ class MainCharWalkManager {
     }
 
     public mainCharWalk(p_tar:egret.Point, callback:Function, breakStep:number=1500) {
+        this.walkPathFragments.length = 0;
         this.walkEndFunc = callback;
         var mainChar:engine.MainChar = GameScene.scene.mainChar;
         var p_cur:egret.Point = engine.Engine.getPoint(mainChar.x, mainChar.y);
@@ -46,10 +48,10 @@ class MainCharWalkManager {
             return [p_start, p_end];
         }
         var ret:Array<egret.Point>;
-        if (this.checkPointType(p_start, p_end) == true) {
+        if (this.checkPointType(p_start, p_end) && (tp_start.x == tp_end.x || tp_start.y == tp_end.y)) {
             ret = [p_start, p_end];
         } else {
-            ret = this.astar.getPath(engine.TileGroup.getInstance().hash, p_start.x, p_start.y, p_end.x, p_end.y, true, breakStep);
+            ret = this.astar.getPath(engine.TileGroup.getInstance().hash, tp_start.x, tp_start.y, tp_end.x, tp_end.y, true, breakStep);
             if (ret.length) {
                 var p_tail:egret.Point = ret[ret.length-1];
                 if (tp_end.equals(engine.TileUtils.pixelsToTile(p_tail.x, p_tail.y))) {
@@ -71,11 +73,12 @@ class MainCharWalkManager {
         var idx:number = 0;
         while (idx < step) {
             var p_inter:egret.Point = egret.Point.interpolate(p_start, p_end, idx/step);
-            var tp_inter:egret.Point = egret.TileUtils.pixelsToTile(p_inter.x, p_inter.y);
+            var tp_inter:egret.Point = engine.TileUtils.pixelsToTile(p_inter.x, p_inter.y);
             var tile:engine.Tile = engine.TileGroup.getInstance().take(tp_inter.x + "|" + tp_inter.y);
             if (tile == null || tile.type == 0 || tile.type != this.astar.mode) {
                 return false;
             }
+            idx++;
         }
         return true;
     }
@@ -85,7 +88,7 @@ class MainCharWalkManager {
         if (len < 2) {
             return;
         }
-        var new_paths:Array = [];
+        var new_paths:Array<egret.Point> = [];
         var i:number = 0;
         var j:number = 0;
         while (i < len-1) {
@@ -109,15 +112,15 @@ class MainCharWalkManager {
         if (new_paths.length > 1) {
             len = new_paths.length;
             var sum:number = 0;
-            var p_start:number = 0;
+            var i_start:number = 0;
             var n_start:number = 1;
             while (n_start < len) {
                 sum += egret.Point.distance(new_paths[n_start-1], new_paths[n_start]);
                 if ((Math.ceil(sum) >= _arg_3) || (n_start == len-1)) {
-                    var pts:Array = new_paths.slice(p_start, (n_start+1));
+                    var pts:Array<egret.Point> = new_paths.slice(i_start, (n_start+1));
                     this.walkPathFragments.push(pts);
                     sum = 0;
-                    p_start = n_start;
+                    i_start = n_start;
                 }
                 n_start++;
             }
@@ -134,23 +137,22 @@ class MainCharWalkManager {
     }
 
     private walkNextPart():void {
-        var list:Array = this.walkPathFragments.shift();
+        var list:Array<egret.Point> = this.walkPathFragments.shift();
         GameScene.scene.mainChar.moveEndFunc = this.charPartWalkEndFunc;
         GameScene.scene.mainChar.tarMoveTo(list);
         this.sendWalkData(list);
     }
 
-    private charPartWalkEndFunc():void
-    {
-        if (this.walkPathFragments.length == 0) {
-            this.totalWalkEnd();
+    private charPartWalkEndFunc():void {
+        var self = MainCharWalkManager._instance;
+        if (self.walkPathFragments.length == 0) {
+            self.totalWalkEnd();
         } else {
-            this.walkNextPart();
+            self.walkNextPart();
         }
     }
 
-    private sendWalkData(list:Array):void
-    {
+    private sendWalkData(list:Array<egret.Point>):void {
     }
 
 }
