@@ -20,20 +20,18 @@ module engine {
 			this.activate();
 		}
 
-		public set x(value:number) {
-			if (value == this.x) {
-				return;
+		public _setX(value:number) {
+			if (this.y != value) {
+				super._setX(value);
+				this.updata(value, this.y, this.nodeKey);
 			}
-			super.x = value;
-			this.updata(value, this.y, this.nodeKey);
 		}
 
-		public set y(value:number) {
-			if (value == this.y) {
-				return;
+		public _setY(value:number) {
+			if (this.y != value) {
+				super._setY(value);
+				this.updata(this.x, value, this.nodeKey);
 			}
-			super.y = value;
-			this.updata(this.x, value, this.nodeKey);
 		}
 
 		public updata(x:number, y:number, key:string) {
@@ -122,8 +120,7 @@ module engine {
 		}
 
 		public dispose() {
-			this._isActivate = false;
-			this.remove(this._node);
+			this.unactivate();
 			this._node = null;
 			this._tree = null;
 			super.dispose();

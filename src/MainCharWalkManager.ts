@@ -91,7 +91,8 @@ class MainCharWalkManager {
                 i--;
             }
         }
-        if (array.length >= 2) {
+        // 3个拐点进行分组
+        if (array.length > 3) {
             this.walkPathFragments = engine.TileAstar.pathCutter(array, 3);
         } else {
             this.walkPathFragments = [array];
