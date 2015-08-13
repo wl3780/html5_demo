@@ -1,8 +1,8 @@
 module engine {
-	export class AvatarDataFormat extends Proto {
+	export class AvatarActionFormat extends Proto {
 
-		public static _instanceHash_:Map<string, AvatarDataFormat> = new Map<string, AvatarDataFormat>();
-		public static _recoverQueue_:Array<AvatarDataFormat> = [];
+		public static _instanceHash_:Map<string, AvatarActionFormat> = new Map<string, AvatarActionFormat>();
+		public static _recoverQueue_:Array<AvatarActionFormat> = [];
 		public static _recoverIndex_:number = 50;
 
 		public idName:string;
@@ -37,28 +37,28 @@ module engine {
 		public constructor() {
 			super();
 			this.actState = {};
-			AvatarDataFormat._instanceHash_.set(this.id, this);
+			AvatarActionFormat._instanceHash_.set(this.id, this);
 		}
 
-		public static createAvatarDataFormat():AvatarDataFormat {
-			var result:AvatarDataFormat = null;
-			if(AvatarDataFormat._recoverQueue_.length) {
-				result = AvatarDataFormat._recoverQueue_.pop();
+		public static createAvatarActionFormat():AvatarActionFormat {
+			var result:AvatarActionFormat = null;
+			if(AvatarActionFormat._recoverQueue_.length) {
+				result = AvatarActionFormat._recoverQueue_.pop();
 				result._id_ = Engine.getSoleId();
-				AvatarDataFormat._instanceHash_.set(result.id, result);
+				AvatarActionFormat._instanceHash_.set(result.id, result);
 			} else {
-				result = new AvatarDataFormat();
+				result = new AvatarActionFormat();
 			}
 			result.init();
 			return result;
 		}
 
-		public static takeAvatarDataFormat(id:string):AvatarDataFormat {
-			return AvatarDataFormat._instanceHash_.get(id);
+		public static takeAvatarActionFormat(id:string):AvatarActionFormat {
+			return AvatarActionFormat._instanceHash_.get(id);
 		}
 
-		public static removeAvatarDataFormat(id:string) {
-			AvatarDataFormat._instanceHash_.delete(id);
+		public static removeAvatarActionFormat(id:string) {
+			AvatarActionFormat._instanceHash_.delete(id);
 		}
 
 		public resetActReady() {
@@ -90,9 +90,9 @@ module engine {
 			if(this.isDisposed) {
 				return ;
 			}
-			AvatarDataFormat._instanceHash_.delete(this.id);
-			if(AvatarDataFormat._recoverQueue_.length <= AvatarDataFormat._recoverIndex_) {
-				AvatarDataFormat._recoverQueue_.push(this);
+			AvatarActionFormat._instanceHash_.delete(this.id);
+			if(AvatarActionFormat._recoverQueue_.length <= AvatarActionFormat._recoverIndex_) {
+				AvatarActionFormat._recoverQueue_.push(this);
 			} else {
 				this.dispose();
 			}
@@ -111,7 +111,7 @@ module engine {
 			return key;
 		}
 
-		public setup(actGroup:AvatarDataFormatGroup, config:any) {
+		public setup(actGroup:AvatarActionFormatGroup, config:any) {
 			this.oid = actGroup.id;
 			this.idName = actGroup.idName;
 			this.actionName = config.id;

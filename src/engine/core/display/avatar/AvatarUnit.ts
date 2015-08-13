@@ -5,11 +5,14 @@ module engine {
 		private static _recoverQueue_:Array<AvatarUnit> = [];
 		private static _recoverIndex_:number = 50;
 
+		public renderindex:number;
 		public isDisposed:boolean;
 
 		public constructor() {
 			super();
+			this.renderindex = Math.random() * AvatarRenderManager.renderNum >> 0;
 			AvatarUnit._instanceHash_.set(this.id, this);
+			AvatarRenderManager.getInstance().addUnit(this);
 		}
 
 		public static createAvatarUnit():AvatarUnit {
@@ -35,6 +38,14 @@ module engine {
 
 		}
 
+		public onBodyRender() {
+
+		}
+
+		public onEffectRender() {
+
+		}
+
 		public recover() {
 			if (this.isDisposed) {
 				return;
@@ -53,6 +64,7 @@ module engine {
 		}
 
 		private clear() {
+			AvatarRenderManager.getInstance().removeUnit(this.id);
 			AvatarUnit._instanceHash_.delete(this.id);
 		}
 	}

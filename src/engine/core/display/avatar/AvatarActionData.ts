@@ -12,8 +12,8 @@ module engine {
 
 		private _avatarDataFormatGroup_id_:string;
 
-		private _actionGroup_:AvatarDataFormatGroup;
-		private _actionFormat_:AvatarDataFormat;
+		private _actionGroup_:AvatarActionFormatGroup;
+		private _actionFormat_:AvatarActionFormat;
 
 		public constructor() {
 			super();
@@ -47,7 +47,7 @@ module engine {
 		}
 		public set avatarDataFormatGroup_id(value:String) {
 			this._avatarDataFormatGroup_id_ = value;
-			this._actionGroup_ = AvatarDataFormatGroup.takeAvatarDataFormatGroup(value);
+			this._actionGroup_ = AvatarActionFormatGroup.takeAvatarActionFormatGroup(value);
 		}
 
 		public recover() {

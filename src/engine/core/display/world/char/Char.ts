@@ -1,5 +1,5 @@
 module engine {
-	export class Char extends egret.Sprite implements IChar {
+	export class Char extends AvatarUnitDisplay implements IChar {
 
 		public runSpeed:number = 230;
 		public walkSpeed:number = 100;
@@ -75,10 +75,10 @@ module engine {
 			return true;
 		}
 
-		public onRender():void {
+		public onRender() {
 		}
 
-		public dispose():void {
+		public dispose() {
 		}
 
 		public toString():string {
@@ -116,7 +116,7 @@ module engine {
 			}
 		}
 
-		protected _CharMoveEnd_():void {
+		protected _CharMoveEnd_() {
 			if (this.moveEndFunc != null) {
 				this.moveEndFunc();
 			}

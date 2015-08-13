@@ -7,6 +7,8 @@ module engine {
 		public static AVATAR_IMAGE_WIDTH:number = 400;
 		public static AVATAR_IMAGE_HEIGHT:number = 300;
 
+		public static stageRect:egret.Rectangle = new egret.Rectangle();
+
 		public static language:string = "zh_CN";
 		public static version:string = "ver-1";
 		public static assetsHost:string;

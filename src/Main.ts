@@ -17,7 +17,7 @@ class Main extends egret.DisplayObjectContainer {
         RES.loadConfig("resource/resource.json","resource/");
     }
 
-    private onConfigComplete(event: RES.ResourceEvent) {
+    private onConfigComplete(event:RES.ResourceEvent) {
         RES.removeEventListener(RES.ResourceEvent.CONFIG_COMPLETE,this.onConfigComplete,this);
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE,this.onResourceLoadComplete,this);
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR,this.onResourceLoadError,this);
@@ -49,7 +49,6 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.x = 2500;
         this.scene.mainChar.y = 1300;
         this.scene.changeScene("10321");
-//        this.scene.changeScene("10001");
     }
 
 }

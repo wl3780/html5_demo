@@ -27,6 +27,10 @@ module engine {
 			this.setup();
 		}
 
+		public static takeUnitDisplay(unitId:string):IAvatar {
+			return AvatarUnitDisplay._instanceHash_.get(unitId);
+		}
+
 		public hideBody(value:boolean) {
 			this._hide_body_ = value;
 		}
