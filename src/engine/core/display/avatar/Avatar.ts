@@ -13,7 +13,7 @@ module engine {
         protected id_wgid:string;
 
         protected point:egret.Point;
-        protected action:string = AvatarActions.WALK;
+        protected action:string = ActionConst.WALK;
 
         private _dir:number = 4;
         private _currentFrame:number = 0;

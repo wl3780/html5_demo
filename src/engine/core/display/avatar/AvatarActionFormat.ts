@@ -31,7 +31,6 @@ module engine {
 
 		private actState:any;
 
-		public singleDir:boolean;
 		public bitmapFlips:Array<boolean>;
 
 		public constructor() {
@@ -105,7 +104,7 @@ module engine {
 
 		public getLink(dir:number, frame:number):String {
 			var key:string = this.idName + Engine.LINE + this.actionName + Engine.LINE + dir + Engine.LINE + frame;
-			if (this.singleDir) {
+			if (this.totalDir == 1) {
 				key = this.idName + Engine.LINE + this.actionName + Engine.LINE + 0 + Engine.LINE + frame;
 			}
 			return key;
@@ -128,8 +127,8 @@ module engine {
 			var dirLen:number = dirList.length;
 			var dirIdx:number = 0;
 			var frameData:any;
+			this.totalDir = dirLen;
 			if (dirLen == 1) {
-				this.singleDir = true;
 				frameData = dirList[0];
 				this.initFrameData(0, frameData.action);
 				while (dirIdx < 8) {
