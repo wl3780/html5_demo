@@ -117,11 +117,12 @@ module engine {
 					if (this.bmd_wgid && this.bmd_wgid.texture) {
 						this.bmd_wgid.texture = null;
 					}
-					this.setBitmapValue(bitmap, bitmapData, -tx, -ty);
-					if (!bitmap.parent && bitmapData) {
-						this.updateBitmapDepth();
-					}
 				}
+                this.setBitmapValue(bitmap, bitmapData, -tx, -ty);
+                if (bitmap.texture && !bitmap.parent) {
+                    this.addChild(bitmap);
+                    this.updateBitmapDepth();
+                }
 			} else {
 				if (renderType == AvatarRenderTypes.BODY_TYPE) {
 					if (avatarType == AvatarTypes.BODY_TYPE && this.bmd_mid) {
@@ -148,7 +149,18 @@ module engine {
 		public updateBitmapDepth() {
 		}
 
-		public get stageIntersects():Boolean {
+		public get dir():number {
+			return this._unit_.dir;
+		}
+		public set dir(value:number) {
+			this._unit_.dir = value;
+		}
+
+		public get action():string {
+			return this._unit_.action;
+		}
+
+		public get stageIntersects():boolean {
 			var rect:egret.Rectangle = EngineGlobal.charIntersectsRect;
 			rect.x = this.x - 100;
 			rect.y = this.y - 150;
@@ -182,6 +194,8 @@ module engine {
 			AvatarUnitDisplay._instanceHash_.set(this.id, this);
 			this.registerNodeTree(SceneConst.SCENE_ITEM_NODER);
 			this._unit_ = AvatarUnit.createAvatarUnit();
+			this._unit_.oid = this.id;
+			this._unit_.init();
 		}
 
 		private setBitmapValue(bitmap:egret.Bitmap, bitmapData:egret.Texture, vx:number, vy:number) {

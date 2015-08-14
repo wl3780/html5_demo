@@ -2,7 +2,7 @@ module engine {
 
 	export class AvatarActionData extends Proto {
 
-		public static _instanceHash_:Map<string, AvatarActionData>;
+		public static _instanceHash_:Map<string, AvatarActionData> = new Map<string, AvatarActionData>();
 		public static _recoverQueue_:Array<AvatarActionData> = [];
 		public static _recoverIndex_:number = 50;
 
@@ -34,6 +34,7 @@ module engine {
 				var result:AvatarActionData = AvatarActionData._recoverQueue_.pop();
 				result._id_ = Engine.getSoleId();
 				AvatarActionData._instanceHash_.set(result.id, result);
+                return result;
 			} else {
 				return new AvatarActionData();
 			}
@@ -107,7 +108,7 @@ module engine {
 			return 0;
 		}
 
-		public set avatarDataFormatGroup_id(value:String) {
+		public set avatarDataFormatGroup_id(value:string) {
 			this._avatarDataFormatGroup_id_ = value;
 			this._actionGroup_ = AvatarActionFormatGroup.takeAvatarActionFormatGroup(value);
 		}

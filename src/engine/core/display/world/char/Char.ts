@@ -16,7 +16,6 @@ module engine {
 
 		public moveEndFunc:Function;
 
-		private _dir:number = DirConst.BOTTOM;
 		private _speed_:number;
 		private _movePath_:Array<egret.Point>;
 		private _tarPoint_:egret.Point;
@@ -27,11 +26,6 @@ module engine {
 			super();
 			this.point = Engine.getPoint();
 			this.tilePoint = Engine.getPoint();
-		}
-
-		public changeMoveAction() {
-			this.checkAndSetDir();
-			this.setMoveSpeed();
 		}
 
 		public moveTo(x:number, y:number) {
@@ -52,7 +46,7 @@ module engine {
 				return;
 			}
 			this.checkAndSetDir(true);
-			this.setMoveSpeed();
+			this.changeMoveAction();
 			this._movePath_ = value;
 
 			this._loopMoveTime_ = egret.getTimer();
@@ -71,49 +65,31 @@ module engine {
 			this._loopMoveTime_ = egret.getTimer();
 		}
 
-		public stageIntersects():boolean {
-			return true;
-		}
-
-		public onRender() {
-		}
-
-		public dispose() {
-		}
-
-		public toString():string {
-			return null;
-		}
-
 		public get content():egret.DisplayObject {
 			return this;
 		}
 
+		public play(action:string, renderType:number=AvatarRenderTypes.NORMAL_RENDER, playEndFunc:Function=null, stopFrame:number=-1) {
+			super.play(action, renderType, playEndFunc, stopFrame);
+			this.setMoveSpeed();
+		}
+
 		public _setX(value:number) {
 			super._setX(value);
-            this.point.x = value;
+			this.point.x = value;
 			this.tilePoint.x = this.x / TileConst.TILE_WIDTH >> 0;
+			Scene.isDepthChange = true;
 		}
 
 		public _setY(value:number) {
 			super._setY(value);
-            this.point.y = value;
+			this.point.y = value;
 			this.tilePoint.y = this.y / TileConst.TILE_HEIGHT >> 0;
+			Scene.isDepthChange = true;
 		}
 
-		public get dir():number {
-			return this._dir;
-		}
-		public set dir(value:number) {
-			this._dir = value;
-		}
-
-		public setMoveSpeed() {
-			if (this.dir == DirConst.TOP || this.dir == DirConst.BOTTOM) {
-				this._speed_ = this.runSpeed / 2;
-			} else {
-				this._speed_ = this.runSpeed;
-			}
+		public dispose() {
+			super.dispose();
 		}
 
 		protected _CharMoveEnd_() {
@@ -150,6 +126,31 @@ module engine {
 					this._tarPoint_ = null;
 					this._CharMoveEnd_();
 				}
+			}
+		}
+
+		private changeMoveAction() {
+			if (this._tarPoint_) {
+				var dis:number = egret.Point.distance(this._tarPoint_, this.point);
+				var pass:number;
+				if (this.dir == DirConst.TOP || this.dir == DirConst.BOTTOM) {
+					pass = TileConst.TILE_HEIGHT * 2;
+				} else {
+					pass = TileConst.TILE_WIDTH * 2;
+				}
+				if (dis < pass) {
+					this.play(ActionConst.WALK);
+				} else {
+					this.play(ActionConst.RUN);
+				}
+			}
+		}
+
+		private setMoveSpeed() {
+			if (this.dir == DirConst.TOP || this.dir == DirConst.BOTTOM) {
+				this._speed_ = this.runSpeed / 2;
+			} else {
+				this._speed_ = this.runSpeed;
 			}
 		}
 

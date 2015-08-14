@@ -2,6 +2,7 @@ module engine {
     export class Scene extends DisplaySprite implements IScene {
 
         public static scene:Scene;
+        public static isDepthChange:boolean;
 
         public changing:boolean;
         public isReady:boolean;
@@ -45,8 +46,6 @@ module engine {
         public setupReady():void {
             this.isReady = true;
             this.mapData = this.mapLayer.mapData;
-//            this.mainChar.x = -this.mapData.pixel_x;
-//            this.mainChar.y = -this.mapData.pixel_y;
         }
 
         public changeScene(scene_id:string):void {
@@ -134,6 +133,12 @@ module engine {
 
         protected enterFrameFunc(evt:egret.TimerEvent):void {
             if (this.isReady) {
+                this.globalToLocal(0, 0, EngineGlobal.stagePoint);
+                EngineGlobal.stageRect.x = EngineGlobal.stagePoint.x;
+                EngineGlobal.stageRect.y = EngineGlobal.stagePoint.y;
+                EngineGlobal.stageRect.width = Engine.stage.stageWidth;
+                EngineGlobal.stageRect.height = Engine.stage.stageHeight;
+                
                 this.mainChar.loopMove();
                 this.sceneMoveTo(this.mainChar.x, this.mainChar.y);
             }

@@ -11,9 +11,7 @@ module engine {
 
 		protected _actNow_:string;
 		protected _actNext_:string;
-		protected _actPrve_:string;
 		protected _currFrame_:number;
-		protected _interval_:number;
 		protected _currDir_:number;
 		private _bodyRenderTime_:number = 0;
 
@@ -44,6 +42,13 @@ module engine {
 
 		public static removeAvatarUnit(id:string):boolean {
 			return AvatarUnit._instanceHash_.delete(id);
+		}
+
+		public init() {
+			this._actNow_ = this._actNext_ = ActionConst.STAND;
+            this._currDir_ = DirConst.BOTTOM;
+			this._currFrame_ = 0;
+			this._bodyRenderTime_ = 0;
 		}
 
 		public loadAvatarPart(avatarType:string, idNum:string, random:number) {
@@ -151,6 +156,20 @@ module engine {
 
 		public onEffectRender(renderType:number=AvatarRenderTypes.NORMAL_RENDER) {
 
+		}
+
+		public get dir():number {
+			return this._currDir_;
+		}
+		public set dir(value:number) {
+			if (this._currDir_ != value) {
+				this._currDir_ = value;
+				this.onBodyRender(AvatarRenderTypes.UN_PLAY_NEXT_RENDER);
+			}
+		}
+
+		public get action():string {
+			return this._actNow_;
 		}
 
 		public recover() {

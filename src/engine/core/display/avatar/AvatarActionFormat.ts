@@ -83,6 +83,7 @@ module engine {
 			this.max_rects = [];
 			this.dirOffsetX = [0,0,0,0,0,0,0,0];
 			this.dirOffsetY = [0,0,0,0,0,0,0,0];
+            this.bitmapFlips = new Array(8);
 		}
 
 		public recover() {
@@ -102,7 +103,7 @@ module engine {
 			this.isDisposed = true;
 		}
 
-		public getLink(dir:number, frame:number):String {
+		public getLink(dir:number, frame:number):string {
 			var key:string = this.idName + Engine.LINE + this.actionName + Engine.LINE + dir + Engine.LINE + frame;
 			if (this.totalDir == 1) {
 				key = this.idName + Engine.LINE + this.actionName + Engine.LINE + 0 + Engine.LINE + frame;

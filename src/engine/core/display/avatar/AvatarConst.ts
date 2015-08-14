@@ -25,7 +25,7 @@ module engine {
          */
         public static FLY_TYPE:string = "fid";
 
-        public static depthBaseHash:Array = [
+        public static depthBaseHash:Array<Array<string>> = [
             ["wgid", "mid", "wid"],
             ["wgid", "wid", "mid"],
             ["wid", "wgid", "mid"],
@@ -35,7 +35,7 @@ module engine {
             ["wgid", "mid", "wid"],
             ["wgid", "mid", "wid"]
         ];
-        public static depthAttackHash:Array = [
+        public static depthAttackHash:Array<Array<string>> = [
             ["wgid", "mid", "wid"],
             ["wgid", "wid", "mid"],
             ["wid", "mid", "wgid"],
@@ -45,7 +45,7 @@ module engine {
             ["wgid", "mid", "wid"],
             ["wgid", "mid", "wid"]
         ];
-        public static depthDeathHash:Array = ["wid", "mid", "wgid"];
+        public static depthDeathHash:Array<string> = ["wid", "mid", "wgid"];
 
     }
 }
@@ -121,13 +121,13 @@ module engine {
         /**
          * 攻击起手动作
          */
-        public static AttackWarm:String = "attack_warm";
+        public static AttackWarm:string = "attack_warm";
         /**
          * 技能起手动作
          */
-        public static SkillWarm:String = "skill_warm";
+        public static SkillWarm:string = "skill_warm";
 
-        public static LoopActions:Array<String> = [
+        public static LoopActions:Array<string> = [
             ActionConst.AttackWarm,
             ActionConst.SkillWarm,
             ActionConst.STAND,

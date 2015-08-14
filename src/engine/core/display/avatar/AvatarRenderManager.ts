@@ -12,7 +12,7 @@ module engine {
 
 		public constructor() {
 			var timer:egret.Timer = new egret.Timer(0);
-			timer.addEventListener(egret.TimerEvent, this.timerFrameFunc, this);
+			timer.addEventListener(egret.TimerEvent.TIMER, this.timerFrameFunc, this);
 			timer.start();
 		}
 
@@ -20,7 +20,7 @@ module engine {
 			if (AvatarRenderManager._instance_ == null) {
 				AvatarRenderManager._instance_ = new AvatarRenderManager();
 			}
-			return AvatarRenderManager;
+			return AvatarRenderManager._instance_;
 		}
 
 		public static get unit_length():number {
@@ -57,8 +57,6 @@ module engine {
 				return ;
 			}
 			this.intervalue = egret.getTimer();
-			EngineGlobal.stageRect.width = Engine.stage.stageWidth;
-			EngineGlobal.stageRect.height = Engine.stage.stageHeight;
 
 			this.renderIndex++;
 			if(this.renderIndex >= AvatarRenderManager.renderNum) {

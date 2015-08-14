@@ -43,12 +43,20 @@ class Main extends egret.DisplayObjectContainer {
         console.log("fuck you " + this.stage.stageWidth+"px " + this.stage.stageHeight+"px");
     }
 
+    private aa: string="haha";
     private createGameScene() {
         this.scene = new GameScene();
         this.scene.setup(this);
         this.scene.mainChar.x = 2500;
         this.scene.mainChar.y = 1300;
         this.scene.changeScene("10321");
+        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "100000002");
+        
+        var bb: string="bb";
+        var arr: Array<number>=[1,2,3,4];
+        arr.forEach(num => {
+            console.log(this.aa,bb,num);
+        });
     }
 
 }

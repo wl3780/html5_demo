@@ -16,7 +16,7 @@ module engine {
 			return AvatarRequestManager.instance;
 		}
 
-		public getBitmapData(key:String, link:String):egret.Texture {
+		public getBitmapData(key:string, link:string):egret.Texture {
 			var sheet:egret.SpriteSheet = this._bitmapdataHash_.get(key);
 			if (sheet) {
 				return sheet.getTexture(link);
@@ -30,6 +30,7 @@ module engine {
 			var actGroup:AvatarActionFormatGroup = this._requestHash_.get(avatarId);
 			if (actGroup == null) {
 				actGroup = AvatarActionFormatGroup.createAvatarActionFormatGroup();
+                actGroup.idName = avatarId;
 				this._requestHash_.set(avatarId, actGroup);
 			}
 			actGroup.quoteQueue.push(actData.id);

@@ -8,6 +8,7 @@ module engine {
 		public static AVATAR_IMAGE_HEIGHT:number = 300;
 
 		public static stageRect:egret.Rectangle = new egret.Rectangle();
+        public static stagePoint: egret.Point = new egret.Point();
 		public static charIntersectsRect:egret.Rectangle = new egret.Rectangle();
 
 		public static language:string = "zh_CN";

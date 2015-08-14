@@ -5,7 +5,7 @@ module engine {
 
         y:number;
 
-        id:string;
+        id?:string;
 
         tid?:string;
 
