@@ -11,8 +11,9 @@ module engine {
 
 		public point:egret.Point;
 		public tilePoint:egret.Point;
-		public enabled:boolean;
-		public isDisposed:boolean;
+		public enabled:boolean = false;
+		public isDisposed:boolean = false;
+		public isRuning:boolean = false;
 
 		public moveEndFunc:Function;
 
@@ -51,9 +52,11 @@ module engine {
 
 			this._loopMoveTime_ = egret.getTimer();
 			this._totalTime_ = 0;
+			this.isRuning = true;
 		}
 
 		public stopMove() {
+			this.isRuning = false;
             if (this.action != ActionConst.STAND && this.action != ActionConst.DEATH && this.action.indexOf("warm") == -1) {
                 this.play(ActionConst.STAND, AvatarRenderTypes.UN_PLAY_NEXT_RENDER);
             }

@@ -18,19 +18,22 @@ module engine {
         public mainChar:MainChar;
 
         public mouseDownPoint:egret.Point;
+        public stageIntersectsHash:Map<string, egret.DisplayObject>;
 
         private container:egret.DisplayObjectContainer;
         private focusP:egret.Point;
         private currP:egret.Point = new egret.Point();
+        private _depthTime:number = 0;
 
         constructor() {
             super();
             Scene.scene = this;
             this.mouseDownPoint = new egret.Point();
+            this.stageIntersectsHash = new Map<string, egret.DisplayObject>();
             this.init();
         }
 
-        public setup(container:egret.DisplayObjectContainer):void {
+        public setup(container:egret.DisplayObjectContainer) {
             this.container = container;
             this.container.addChildAt(this, 0);
             this.container.addChildAt(this.mapLayer, 0);
@@ -43,24 +46,24 @@ module engine {
             timer.start();
         }
 
-        public setupReady():void {
+        public setupReady() {
             this.isReady = true;
             this.mapData = this.mapLayer.mapData;
         }
 
-        public changeScene(scene_id:string):void {
+        public changeScene(scene_id:string) {
             this.changing = true;
             this.isReady = false;
             this.mapLayer.changeScene(scene_id);
         }
 
-        public sceneMoveTo(px:number, py:number):void {
+        public sceneMoveTo(px:number, py:number) {
             this.focusP = this.getCameraFocusTo(px, py, this.focusP);
             this.currP.setTo(this.x, this.y);
             this.sceneMove(this.currP, this.focusP);
         }
 
-        public addItem(item:ISceneItem, layer:string):void {
+        public addItem(item:ISceneItem, layer:string) {
             item.layer = layer;
             switch (layer) {
                 case SceneConst.TOP_LAYER:
@@ -78,7 +81,7 @@ module engine {
             }
         }
 
-        public removeItem(item:ISceneItem):void {
+        public removeItem(item:ISceneItem) {
 
         }
 
@@ -86,11 +89,11 @@ module engine {
             return null;
         }
 
-        public dispose():void {
+        public dispose() {
             super.dispose();
         }
 
-        private init():void {
+        private init() {
             this.touchEnabled = this.touchChildren = false;
 
             this.nodeTree = new engine.NodeTree(SceneConst.SCENE_ITEM_NODER);
@@ -123,15 +126,15 @@ module engine {
             this.addItem(this.mainChar, SceneConst.MIDDLE_LAYER);
         }
 
-        protected _EngineMouseDownFunc_(evt:egret.TouchEvent):void {
+        protected _EngineMouseDownFunc_(evt:egret.TouchEvent) {
 
         }
 
-        protected _EngineMouseUpFunc_(evt:egret.TouchEvent):void {
+        protected _EngineMouseUpFunc_(evt:egret.TouchEvent) {
 
         }
 
-        protected enterFrameFunc(evt:egret.TimerEvent):void {
+        protected enterFrameFunc(evt:egret.TimerEvent) {
             if (this.isReady) {
                 this.globalToLocal(0, 0, EngineGlobal.stagePoint);
                 EngineGlobal.stageRect.x = EngineGlobal.stagePoint.x;
@@ -141,6 +144,9 @@ module engine {
                 
                 this.mainChar.loopMove();
                 this.sceneMoveTo(this.mainChar.x, this.mainChar.y);
+
+                this.charQueueMove();
+                this.autoDepth();
             }
         }
 
@@ -184,11 +190,64 @@ module engine {
             }
         }
 
-        protected sceneMove(pt_from:egret.Point, pt_to:egret.Point):void {
+        protected sceneMove(pt_from:egret.Point, pt_to:egret.Point) {
             var dis:Number = egret.Point.distance(pt_from, pt_to);
             if (dis > 0) {
                 this.x = this.mapLayer.x = pt_to.x >> 0;
                 this.y = this.mapLayer.y = pt_to.y >> 0;
+            }
+        }
+
+        protected charQueueMove() {
+            var display:any;
+            var idx:number = this.middleLayer.numChildren - 1;
+            while (idx >= 0) {
+                display = this.middleLayer.getChildAt(idx);
+                if (display != this.mainChar && display.loopMove != undefined) {
+                    (<IInteractiveObject>display).loopMove();
+                }
+                idx--;
+            }
+        }
+
+        protected autoDepth() {
+            if (this.isReady == false || Scene.isDepthChange == false) {
+                return;
+            }
+            var needTime:number = 300;
+            if (egret.getTimer()-this._depthTime < needTime) {
+                return;
+            }
+            Scene.isDepthChange = false
+            this._depthTime = egret.getTimer();
+
+            var idx:number = 0;
+            var len:number = this.middleLayer.numChildren;
+            var display:any;
+            var list:Array<egret.DisplayObject> = [];
+            while (idx < len) {
+                display = this.middleLayer.getChildAt(idx);
+                if (display.stageIntersects != undefined && (<ISceneItem>display).stageIntersects) {
+                    list.push(display);
+                }
+                idx++;
+            }
+            list.sort((a, b) => {
+                if (a.y < b.y) {
+                    return -1;
+                }
+                return 1;
+            });
+            idx = 0;
+            len = list.length;
+            while (idx < len) {
+                display = list[idx];
+                if (idx < this.middleLayer.numChildren) {
+                    this.middleLayer.addChildAt(display, idx);
+                } else {
+                    this.middleLayer.addChild(display);
+                }
+                idx++;
             }
         }
 
