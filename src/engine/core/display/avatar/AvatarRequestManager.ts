@@ -19,6 +19,7 @@ module engine {
 		public getBitmapData(key:string, link:string):egret.Texture {
 			var sheet:egret.SpriteSheet = this._bitmapdataHash_.get(key);
 			if (sheet) {
+    			sheet.createTexture
 				return sheet.getTexture(link);
 			}
 			return null;

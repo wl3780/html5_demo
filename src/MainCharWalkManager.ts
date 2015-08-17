@@ -48,10 +48,12 @@ class MainCharWalkManager {
         } else {
             ret = this.astar.getPath(engine.TileGroup.getInstance().hash, tp_start.x, tp_start.y, tp_end.x, tp_end.y, true, breakStep);
             if (ret.length) {
+                /*
                 var p_tail:egret.Point = ret[ret.length-1];
                 if (tp_end.equals(engine.TileUtils.pixelsToTile(p_tail.x, p_tail.y))) {
                     ret[ret.length-1] = p_end;
                 }
+                */
                 var p_head:egret.Point = ret[0];
                 if (tp_start.equals(engine.TileUtils.pixelsToTile(p_head.x, p_head.y))) {
                     ret[0] = p_start;

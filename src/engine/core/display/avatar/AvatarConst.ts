@@ -73,7 +73,7 @@ module engine {
         /**
          * 跑
          */
-        public static RUN:string = "run";
+        public static RUN:string = "walk"//"run";
         /**
          * 站立
          */

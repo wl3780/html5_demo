@@ -104,6 +104,9 @@ module engine {
 		}
 
 		public getLink(dir:number, frame:number):string {
+			if (this.bitmapFlips[dir] == true) {
+				dir = 8-dir;
+			}
 			var key:string = this.idName + Engine.LINE + this.actionName + Engine.LINE + dir + Engine.LINE + frame;
 			if (this.totalDir == 1) {
 				key = this.idName + Engine.LINE + this.actionName + Engine.LINE + 0 + Engine.LINE + frame;
@@ -151,7 +154,7 @@ module engine {
 						var flipDirIdx:number = 8 - dirIdx;
 						var flipFrameIdx:number = 0;
 						while (flipFrameIdx < this.widths[flipDirIdx].length) {
-							var flipFrameX:number = this.widths[flipDirIdx][flipFrameIdx] - this.txs[flipDirIdx][flipFrameIdx];
+							var flipFrameX:number = this.widths[flipDirIdx][flipFrameIdx]*0 - this.txs[flipDirIdx][flipFrameIdx];
 							this.txs[dirIdx].push(flipFrameX);
 							flipFrameIdx++;
 						}

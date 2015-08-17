@@ -54,7 +54,9 @@ module engine {
 		}
 
 		public stopMove() {
-
+            if (this.action != ActionConst.STAND && this.action != ActionConst.DEATH && this.action.indexOf("warm") == -1) {
+                this.play(ActionConst.STAND, AvatarRenderTypes.UN_PLAY_NEXT_RENDER);
+            }
 		}
 
 		public loopMove() {
@@ -93,6 +95,7 @@ module engine {
 		}
 
 		protected _CharMoveEnd_() {
+            this.stopMove();
 			if (this.moveEndFunc != null) {
 				this.moveEndFunc();
 			}
@@ -121,6 +124,7 @@ module engine {
 				this._totalTime_ = 0;
 				if (this._movePath_.length) {
 					this._tarPoint_ = this._movePath_.shift();
+                    this.checkAndSetDir(false);
 					this.changeMoveAction();
 				} else {
 					this._tarPoint_ = null;

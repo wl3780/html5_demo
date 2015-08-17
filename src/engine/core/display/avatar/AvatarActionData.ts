@@ -108,6 +108,16 @@ module engine {
 			return 0;
 		}
 
+		public getBitmapDataFlip(dir:number):boolean {
+			if (this._actionFormat_) {
+				if (this._actionFormat_.totalDir == 1) {
+					dir = 0;
+				}
+				return this._actionFormat_.bitmapFlips[dir];
+			}
+			return false;
+		}
+
 		public set avatarDataFormatGroup_id(value:string) {
 			this._avatarDataFormatGroup_id_ = value;
 			this._actionGroup_ = AvatarActionFormatGroup.takeAvatarActionFormatGroup(value);

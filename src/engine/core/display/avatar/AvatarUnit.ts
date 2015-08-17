@@ -137,10 +137,11 @@ module engine {
 							var bmd:egret.Texture = actData.getBitmapData(this._currDir_, this._currFrame_);
 							var tx:number = actData.getBitmapDataOffsetX(this._currDir_, this._currFrame_);
 							var ty:number = actData.getBitmapDataOffsetY(this._currDir_, this._currFrame_);
+							var tf:boolean = actData.getBitmapDataFlip(this._currDir_);
 							if (actData.type == AvatarTypes.EFFECT_TYPE) {
-								owner.onBodyRender(AvatarRenderTypes.BODY_EFFECT, actData.type, bmd, tx, ty);
+								owner.onBodyRender(AvatarRenderTypes.BODY_EFFECT, actData.type, bmd, tx, ty, tf);
 							} else {
-								owner.onBodyRender(AvatarRenderTypes.BODY_TYPE, actData.type, bmd, tx, ty);
+								owner.onBodyRender(AvatarRenderTypes.BODY_TYPE, actData.type, bmd, tx, ty, tf);
 							}
 						}
 					});
