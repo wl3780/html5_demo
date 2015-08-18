@@ -16,8 +16,16 @@ module engine {
 			var netModule:INetworkModule = new networkModule();
 			netModule.register();
 
-			for (var key in moduleConst) {
-				// TODO: do some init
+			var kName:string = null;
+			var module:IModule = null;
+			for (var item_key in moduleConst) {
+				kName = moduleConst[item_key];
+				module = ObjectUtils.newInstance(kName);
+				if (module) {
+					module.register();
+				} else {
+					throw new Error("常量" + kName + "不是Module子类定义");
+				}
 			}
 		}
 
@@ -35,30 +43,30 @@ module engine {
 		public static removeModule(module_name:string) {
 			ModuleDock.moduleHash.delete(module_name);
 			var index:number = ModuleDock.moduleList.indexOf(module_name);
-			if(index != -1) {
+			if (index != -1) {
 				ModuleDock.moduleList.splice(index,1);
 			}
 		}
 
 		public static addModuleSub(subProxy:SubProxy) {
 			var subList:Array<SubProxy>;
-			if(ModuleDock.subscribes.has(subProxy.oid) == false) {
+			if (ModuleDock.subscribes.has(subProxy.oid) == false) {
 				subList = [];
 				ModuleDock.subscribes.set(subProxy.oid, subList);
 			} else {
 				subList = ModuleDock.subscribes.get(subProxy.oid);
 			}
 			var index:number = subList.indexOf(subProxy);
-			if(index == -1) {
+			if (index == -1) {
 				subList.push(subProxy);
 			}
 		}
 
 		public static removeModeleSub(subProxy:SubProxy) {
 			var subList:Array<SubProxy> = ModuleDock.subscribes.get(subProxy.oid);
-			if(subList && subList.length) {
+			if (subList && subList.length) {
 				var index:number = subList.indexOf(subProxy);
-				if(index >= 0) {
+				if (index >= 0) {
 					subList.splice(index, 1);
 				}
 			}
