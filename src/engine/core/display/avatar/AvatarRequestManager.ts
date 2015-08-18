@@ -40,7 +40,10 @@ module engine {
 			actData.idName = avatarId;
 			actData.avatarDataFormatGroup_id = actGroup.id;
 			if (actGroup.isLoaded == false) {
-				this.addLoadItem(avatarId);
+				if (actGroup.isPended == false) {
+					actGroup.isPended = true;
+					this.addLoadItem(avatarId);
+				}
 			} else {
 				actData.onSetupReady();
 			}
@@ -53,6 +56,7 @@ module engine {
 			var actGroup:AvatarActionFormatGroup = this._requestHash_.get(avatarId);
 			this.analyeAvatarActionFormat(actGroup, config);
 			actGroup.isLoaded = true;
+			actGroup.isPended = false;
 			actGroup.noticeAvatarActionData();
 
 			resId = avatarId + "_json";

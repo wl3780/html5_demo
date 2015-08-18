@@ -8,8 +8,8 @@ module engine {
 		public isCreateWarn:boolean = true;
 		public owner:string;
 		public type:string;
-		public isLoaded:boolean = false;
-		public isPend:boolean = false;
+		public isLoaded:boolean = false;	// 加载成功
+		public isPended:boolean = false;	// 加载中
 		public isDisposed:boolean = false;
 		public quoteQueue:Array<string>;
 		public idName:string;
