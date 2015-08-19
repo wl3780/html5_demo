@@ -1,8 +1,8 @@
 module engine {
 	export class ModuleDock {
 
-		public static NETWORK_MODULE_NAME:string = egret.getQualifiedClassName(INetworkModule);
-		public static DEFAULT_MODULE_NAME:string = egret.getQualifiedClassName(DefaultModule);
+		public static NETWORK_MODULE_NAME:string = Engine.SIGN + "NetworkModule";
+		public static DEFAULT_MODULE_NAME:string = Engine.SIGN + "DefaultModule";
 
 		private static moduleList:Array<string> = [];
 		private static moduleHash:Map<string, IModule> = new Map<string, IModule>();
@@ -49,7 +49,7 @@ module engine {
 		}
 
 		public static addModuleSub(subProxy:SubProxy) {
-			var subList:Array<SubProxy>;
+			var subList:Array<IProxy>;
 			if (ModuleDock.subscribes.has(subProxy.oid) == false) {
 				subList = [];
 				ModuleDock.subscribes.set(subProxy.oid, subList);
@@ -63,7 +63,7 @@ module engine {
 		}
 
 		public static removeModeleSub(subProxy:SubProxy) {
-			var subList:Array<SubProxy> = ModuleDock.subscribes.get(subProxy.oid);
+			var subList:Array<IProxy> = ModuleDock.subscribes.get(subProxy.oid);
 			if (subList && subList.length) {
 				var index:number = subList.indexOf(subProxy);
 				if (index >= 0) {
@@ -74,7 +74,7 @@ module engine {
 
 		public static sendToModules(message:IMessage) {
 			var module:IModule = null;
-			var subList:Array<SubProxy>;
+			var subList:Array<IProxy>;
 			var geters:Array<string> = message.geters;
 			geters.forEach(geterName => {
 				module = this.takeModule(geterName);
@@ -95,7 +95,7 @@ module engine {
 			var netModule:INetworkModule = <INetworkModule>ModuleDock.takeModule(ModuleDock.NETWORK_MODULE_NAME);
 			if(netModule && !netModule.lock) {
 				netModule.subHandle(message);
-				var subList:Array<SubProxy> = ModuleDock.subscribes.get(netModule.name);
+				var subList:Array<IProxy> = ModuleDock.subscribes.get(ModuleDock.NETWORK_MODULE_NAME);
 				subList.forEach(proxy => {
 					if(!proxy.lock) {
 						proxy.subHandle(message);

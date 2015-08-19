@@ -3,7 +3,13 @@ module engine {
     export class Engine {
         public static SIGN:string = "@";
         public static LINE:string = "_";
+        public static WEALTH_ALONE_SIGN:string = "【WQA】";
+        public static WEALTH_GROUP_SIGN:string = "【WQG】";
         public static stage:egret.Stage;
+
+        public static SWF_Files:Array<string> = ["swf","tmp"];
+        public static IMG_Files:Array<string> = ["png","jpg","jpeg","gif","jxr"];
+        public static TEXT_Files:Array<string> = ["json","text","css","xml","html"];
 
         public static enabled:boolean = true;
         public static compress:boolean = true;

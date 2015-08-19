@@ -56,7 +56,7 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.changeScene("10321");
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "100000002");
 
-        for (var i:number=0; i<100; i++) {
+        for (var i:number=0; i<1; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;
@@ -82,8 +82,8 @@ class Main extends egret.DisplayObjectContainer {
         if (char.isRuning == false) {
             var pt_start:egret.Point = engine.Engine.getPoint(char.x, char.y);
             var pt_end:egret.Point = engine.Engine.getPoint(this.scene.mainChar.x, this.scene.mainChar.y);
-            pt_end.x += Math.random() * this.stage.stageWidth * this.dir_flags[Math.random() * 2 >> 0];
-            pt_end.y += Math.random() * this.stage.stageHeight * this.dir_flags[Math.random() * 2 >> 0];
+            pt_end.x += Math.random() * 400 * this.dir_flags[Math.random() * 2 >> 0];
+            pt_end.y += Math.random() * 200 * this.dir_flags[Math.random() * 2 >> 0];
             var paths:Array<egret.Point> = MainCharWalkManager.getInstance().getPath(pt_start, pt_end);
             char.tarMoveTo(paths);
 

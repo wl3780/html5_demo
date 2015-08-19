@@ -1,7 +1,7 @@
 module engine {
 	export class WealthConst {
 
-		public static SWF_WEALTH:string = "swf_wealth";
+		public static TXT_WEALTH:string = "txt_wealth";
 		public static IMG_WEALTH:string = "img_wealth";
 		public static BING_WEALTH:string = "bing_wealth";
 
