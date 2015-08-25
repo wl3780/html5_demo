@@ -10,6 +10,12 @@
 			"name": "description","type": "json","url": "config/description.json"
 		},
 		{
+			"name":"assets_json","type":"sheet","url":"assets/assets.json"
+		},
+		{
+			"name":"assets_png","type":"image","url":"assets/assets.png"
+		},
+		{
 			"name":"mid_100000001_sm","type":"json","url":"avatars/output/mid_100000001.sm"
 		},
 		{
@@ -52,6 +58,9 @@
 	"groups": [
 		{
 			"name": "preload","keys": "bgImage,egretIcon"
+		},
+	  	{
+		  	"name":"assets","keys":"assets_png,assets_json"
 		}
 	]
 }
