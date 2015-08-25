@@ -36,9 +36,9 @@ class GameScene extends engine.Scene {
     }
 
     private _isDraw:Boolean;
-    protected _EngineMouseDownFunc_(evt:egret.TouchEvent):void {
+    protected _EngineMouseDownFunc_(evt:egret.TouchEvent) {
         super._EngineMouseDownFunc_(evt);
-        if (this.isReady == false) {
+        if (engine.Engine.sceneClickEnabled == false || this.isReady == false) {
             return;
         }
         this.mouseDownPoint.setTo(evt.stageX-this.x, evt.stageY-this.y);
@@ -47,5 +47,10 @@ class GameScene extends engine.Scene {
             this._isDraw = true;
             //this.sceneDraw();
         }
+    }
+
+    protected _EngineMouseUpFunc_(evt:egret.TouchEvent) {
+        super._EngineMouseUpFunc_(evt);
+        engine.Engine.sceneClickEnabled = true;
     }
 }

@@ -5,6 +5,7 @@ class Main extends egret.DisplayObjectContainer {
     private dir_flags:Array<number> = [1, -1];
     private robot_list:Array<engine.Char> = [];
     private robot_index:number = 0;
+    private main_avatar_index:number = 0;
     private time_dur:number = 0;
 
     public constructor() {
@@ -31,6 +32,9 @@ class Main extends egret.DisplayObjectContainer {
 
     private onResourceLoadComplete(event:RES.ResourceEvent) {
         if(event.groupName=="preload") {
+            RES.loadGroup("assets");
+        } else if (event.groupName == "assets") {
+            this.createHUD();
             this.createGameScene();
         } else if(event.groupName.indexOf("mid") != -1) {
             engine.AvatarRequestManager.getInstance().onWealthLoadFunc(event.groupName);
@@ -55,8 +59,9 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.y = 1300;
         this.scene.changeScene("10321");
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "100000002");
+        this.main_avatar_index = 1;
 
-        for (var i:number=0; i<1; i++) {
+        for (var i:number=0; i<0; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;
@@ -70,7 +75,7 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private loop(evt:egret.Event) {
-        if (this.robot_list.length && egret.getTimer() - this.time_dur < 80) {
+        if (this.robot_list.length <= 0 || egret.getTimer() - this.time_dur < 80) {
             return;
         }
         this.time_dur = egret.getTimer();
@@ -82,8 +87,8 @@ class Main extends egret.DisplayObjectContainer {
         if (char.isRuning == false) {
             var pt_start:egret.Point = engine.Engine.getPoint(char.x, char.y);
             var pt_end:egret.Point = engine.Engine.getPoint(this.scene.mainChar.x, this.scene.mainChar.y);
-            pt_end.x += Math.random() * 400 * this.dir_flags[Math.random() * 2 >> 0];
-            pt_end.y += Math.random() * 200 * this.dir_flags[Math.random() * 2 >> 0];
+            pt_end.x += Math.random() * 100 * this.dir_flags[Math.random() * 2 >> 0];
+            pt_end.y += Math.random() * 100 * this.dir_flags[Math.random() * 2 >> 0];
             var paths:Array<egret.Point> = MainCharWalkManager.getInstance().getPath(pt_start, pt_end);
             char.tarMoveTo(paths);
 
@@ -91,6 +96,40 @@ class Main extends egret.DisplayObjectContainer {
             engine.Engine.putPoint(pt_end);
         }
         this.robot_index++;
+    }
+    
+    private createHUD() {
+        this.createButton(this.tapFunc, "变身", 400, 0);
+    }
+
+    private createButton(handler:Function, label:string, x:number, y:number) {
+        /*
+        var sp: egret.Sprite=new egret.Sprite();
+        sp.graphics.beginFill(0xCCCC00);
+        sp.graphics.drawRect(0,0,125,65);
+        sp.graphics.endFill();
+        sp.x=x;
+        sp.y=y; sp.touchEnabled=true;
+        sp.addEventListener(egret.TouchEvent.TOUCH_TAP,this.tapFunc,this);
+        this.addChild(sp);
+        */
+        var btn:gui.Button = new gui.Button();
+        btn.styleName = "mybutton";
+        btn.label = label;
+        btn.x = x;
+        btn.y = y;
+        btn.width = 125;
+        btn.height = 65;
+        btn.addEventListener(egret.TouchEvent.TOUCH_TAP, handler, this);
+        this.addChild(btn);
+    }
+
+    private tapFunc() {
+        this.main_avatar_index++;
+        if (this.main_avatar_index >= this.all_avatar.length) {
+            this.main_avatar_index = 0;
+        }
+        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[this.main_avatar_index]);
     }
 
 }

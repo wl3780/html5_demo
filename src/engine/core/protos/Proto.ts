@@ -2,11 +2,10 @@ module engine {
 
     export class Proto implements IProto {
 
-        static _className_:string;
-
         protected _id_:string;
         protected _oid_:string;
         protected _proto_:any;
+        protected _className_:string;
 
         constructor() {
             this._id_ = Engine.getSoleId();
@@ -34,10 +33,10 @@ module engine {
         }
 
         public get className():string {
-            if (Proto._className_ == null) {
-                Proto._className_ = egret.getQualifiedClassName(this);
+            if (this._className_ == null) {
+                this._className_ = egret.getQualifiedClassName(this);
             }
-            return Proto._className_;
+            return this._className_;
         }
 
         public dispose():void {
