@@ -44,6 +44,7 @@ module gui {
         public set label(value:string) {
             if (this._label == null) {
                 this._label = new egret.TextField();
+                this._label.textAlign = egret.HorizontalAlign.CENTER;
                 this._label.width = this.width;
                 this._label.height = this.height;
                 this.addChild(this._label);

@@ -48,7 +48,7 @@ module engine {
 			}
 			this.checkAndSetDir(true);
 			this.changeMoveAction();
-			this._movePath_ = value;
+			this._movePath_ = value;//this._movePath_.length = 1;
 
 			this._loopMoveTime_ = egret.getTimer();
 			this._totalTime_ = 0;

@@ -31,7 +31,7 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private onResourceLoadComplete(event:RES.ResourceEvent) {
-        if(event.groupName=="preload") {
+        if(event.groupName == "preload") {
             RES.loadGroup("assets");
         } else if (event.groupName == "assets") {
             this.createHUD();
@@ -61,7 +61,7 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "100000002");
         this.main_avatar_index = 1;
 
-        for (var i:number=0; i<0; i++) {
+        for (var i:number=0; i<1; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;
@@ -85,15 +85,11 @@ class Main extends egret.DisplayObjectContainer {
         }
         var char:engine.Char = this.robot_list[this.robot_index];
         if (char.isRuning == false) {
-            var pt_start:egret.Point = engine.Engine.getPoint(char.x, char.y);
             var pt_end:egret.Point = engine.Engine.getPoint(this.scene.mainChar.x, this.scene.mainChar.y);
-            pt_end.x += Math.random() * 100 * this.dir_flags[Math.random() * 2 >> 0];
-            pt_end.y += Math.random() * 100 * this.dir_flags[Math.random() * 2 >> 0];
-            var paths:Array<egret.Point> = MainCharWalkManager.getInstance().getPath(pt_start, pt_end);
+            pt_end.x += Math.random() * 500 * this.dir_flags[Math.random() * 2 >> 0] >> 0;
+            pt_end.y += Math.random() * 300 * this.dir_flags[Math.random() * 2 >> 0] >> 0;
+            var paths:Array<egret.Point> = [pt_end];
             char.tarMoveTo(paths);
-
-            engine.Engine.putPoint(pt_start);
-            engine.Engine.putPoint(pt_end);
         }
         this.robot_index++;
     }
@@ -103,16 +99,6 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private createButton(handler:Function, label:string, x:number, y:number) {
-        /*
-        var sp: egret.Sprite=new egret.Sprite();
-        sp.graphics.beginFill(0xCCCC00);
-        sp.graphics.drawRect(0,0,125,65);
-        sp.graphics.endFill();
-        sp.x=x;
-        sp.y=y; sp.touchEnabled=true;
-        sp.addEventListener(egret.TouchEvent.TOUCH_TAP,this.tapFunc,this);
-        this.addChild(sp);
-        */
         var btn:gui.Button = new gui.Button();
         btn.styleName = "mybutton";
         btn.label = label;
@@ -133,5 +119,3 @@ class Main extends egret.DisplayObjectContainer {
     }
 
 }
-
-

@@ -29,7 +29,7 @@ class MainCharWalkManager {
 
         var array:Array<egret.Point>;
         if (tp_start.equals(tp_end)) {
-            array = [p_cur, p_tar];
+            array = [p_tar];
         } else {
             array = this.getPath(p_cur, p_tar, breakStep);
         }
@@ -40,23 +40,21 @@ class MainCharWalkManager {
         var tp_start:egret.Point = engine.TileUtils.pixelsToTile(p_start.x, p_start.y);
         var tp_end:egret.Point = engine.TileUtils.pixelsToTile(p_end.x, p_end.y);
         if (tp_start.equals(tp_end)) {
-            return [p_start, p_end];
+            return [p_end];
         }
         var ret:Array<egret.Point>;
         if (this.checkPointType(p_start, p_end) && (tp_start.x == tp_end.x || tp_start.y == tp_end.y)) {
-            ret = [p_start, p_end];
+            ret = [p_end];
         } else {
             ret = this.astar.getPath(engine.TileGroup.getInstance().hash, tp_start.x, tp_start.y, tp_end.x, tp_end.y, true, breakStep);
             if (ret.length) {
-                /*
                 var p_tail:egret.Point = ret[ret.length-1];
                 if (tp_end.equals(engine.TileUtils.pixelsToTile(p_tail.x, p_tail.y))) {
                     ret[ret.length-1] = p_end;
                 }
-                */
                 var p_head:egret.Point = ret[0];
                 if (tp_start.equals(engine.TileUtils.pixelsToTile(p_head.x, p_head.y))) {
-                    ret[0] = p_start;
+                    ret.shift();
                 }
             }
             engine.TileAstar.cleanPath(ret);
