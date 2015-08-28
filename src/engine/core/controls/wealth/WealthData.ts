@@ -6,6 +6,7 @@ module engine {
 		public data:any;
 		public dataFormat:string = egret.URLLoaderDataFormat.TEXT;
 		public isLoaded:boolean = false;
+		public isPended:boolean = false;
 		public isSucc:boolean = false;
 		public time:number = 0;
 		public prio:number = 5;
@@ -15,7 +16,6 @@ module engine {
 		private _url:string;
 		private _type:string;
 		private _suffix:string;
-		private _isPended:boolean = false;
 
 		public constructor() {
 			super();
@@ -64,15 +64,9 @@ module engine {
 			return this._suffix;
 		}
 
-		public get isPended():boolean {
-			return this._isPended;
-		}
-		public set isPended(value:boolean) {
-			this._isPended = value;
-		}
-
 		public dispose() {
 			WealthData.removeWealthData(this.id);
+			this._wid_ = null;
 			this._suffix = null;
 			this._type = null;
 			super.dispose();

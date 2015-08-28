@@ -61,11 +61,12 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "100000002");
         this.main_avatar_index = 1;
 
-        for (var i:number=0; i<1; i++) {
+        for (var i:number=0; i<500; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;
             char.y = this.scene.mainChar.y + Math.random() * 300 >> 0;
+            char.openShadow = true;
             char.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[idx]);
             this.scene.addItem(char, engine.SceneConst.MIDDLE_LAYER);
             this.robot_list.push(char);

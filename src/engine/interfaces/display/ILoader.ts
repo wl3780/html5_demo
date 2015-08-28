@@ -5,8 +5,6 @@ module engine {
 
         name:string;
 
-        unloadAndStop(gc:boolean=true):void;
-
-        loadElemt(url:string, successFunc:Function=null, errorFunc:Function=null, progressFunc:Function=null):void;
+        loadElemt(url:string, successFunc:()=>void = null, errorFunc:()=>void = null, progressFunc:()=>void = null):void;
     }
 }

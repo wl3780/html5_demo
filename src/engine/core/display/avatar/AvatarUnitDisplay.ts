@@ -18,6 +18,7 @@ module engine {
 		protected bmd_wid:egret.Bitmap;
 		protected bmd_wgid:egret.Bitmap;
 		protected bmd_eid:egret.Bitmap;
+		protected bmd_shadow:egret.Bitmap;
 
 		protected _hide_body_:boolean = false;
 		protected _hide_wing_:boolean = false;
@@ -167,6 +168,35 @@ module engine {
 			rect.width = 200;
 			rect.height = 300;
 			return EngineGlobal.stageRect.intersects(rect) ? true : false;
+		}
+
+		public set openShadow(value:boolean) {
+			if (value) {
+				if (this.bmd_shadow == null) {
+					this.bmd_shadow = new egret.Bitmap();
+					this.bmd_shadow.texture = Engine.char_shadow;
+					Scene.scene.itemLayer.addChild(this.bmd_shadow);
+				}
+			} else {
+				if (this.bmd_shadow && this.bmd_shadow.parent) {
+					this.bmd_shadow.parent.removeChild(this.bmd_shadow);
+					this.bmd_shadow = null;
+				}
+			}
+		}
+
+		public _setX(value:number) {
+			super._setX(value);
+			if (this.bmd_shadow) {
+				this.bmd_shadow.x = this.x - this.bmd_shadow.width*0.5 >> 0;
+			}
+		}
+
+		public _setY(value:number) {
+			super._setY(value);
+			if (this.bmd_shadow) {
+				this.bmd_shadow.y = this.y - this.bmd_shadow.height*0.5 >> 0;
+			}
 		}
 
 		public dispose() {

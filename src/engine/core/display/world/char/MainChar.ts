@@ -3,9 +3,7 @@ module engine {
 
 		public constructor() {
 			super();
-			this.graphics.beginFill(0xCCCC00);
-			this.graphics.drawCircle(0, 0, 20);
-			this.graphics.endFill();
+			this.openShadow = true;
 		}
 
 	}

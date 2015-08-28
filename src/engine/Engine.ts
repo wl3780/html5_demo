@@ -11,6 +11,8 @@ module engine {
         public static IMG_Files:Array<string> = ["png","jpg","jpeg","gif","jxr"];
         public static TEXT_Files:Array<string> = ["json","text","css","xml","html"];
 
+        public static char_shadow:egret.Texture = null;
+
         public static enabled:boolean = true;
         public static compress:boolean = true;
         public static sceneClickEnabled:boolean = true;

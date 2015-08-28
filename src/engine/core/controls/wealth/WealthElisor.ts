@@ -1,29 +1,27 @@
 module engine {
 	export class WealthElisor extends egret.HashObject {
 
+		public static instanceHash:Map<string, IWealthQueue> = new Map<string, IWealthQueue>();
 		public static isClearing:boolean = false;
 		public static loaderInstanceHash:com.coder.utils.Hash;
-		public static _instance:com.coder.core.controls.wealth.WealthElisor;
-		private loaderContext:flash.LoaderContext;
-		private wealthHash:flash.Dictionary;
+		public static _instance:WealthElisor;
+
+		private wealthHash:Map<>;
 
 		public constructor() {
 			super();
-			super();
-			this.wealthHash = new flash.Dictionary();
-			var checkPolicy:boolean = false;
-			if (flash.Security["sandboxType" + ""] == flash.Security.REMOTE) {
-				checkPolicy = true;
-			}
-			this.loaderContext = new flash.LoaderContext(checkPolicy, flash.ApplicationDomain.currentDomain);
+			this.wealthHash = new Map<>();
 		}
 
-		public static getInstance():com.coder.core.controls.wealth.WealthElisor {
-			return com.coder.core.controls.wealth.WealthElisor._instance = com.coder.core.controls.wealth.WealthElisor._instance || new com.coder.core.controls.wealth.WealthElisor();
+		public static getInstance():WealthElisor {
+			if (WealthElisor._instance == null) {
+				WealthElisor._instance = new WealthElisor();
+			}
+			return WealthElisor._instance;
 		}
 
 		public static removeSign(path:string) {
-			var dict:flash.Dictionary = com.coder.core.controls.wealth.WealthElisor._instance.wealthHash;
+			var dict:flash.Dictionary = WealthElisor._instance.wealthHash;
 			var sign:Sign = <Sign>flash.As3As(dict.getItem(path), Sign);
 			if (sign) {
 				sign.dispose();
@@ -35,7 +33,7 @@ module engine {
 			var arr:Array<any> = null;
 			var file:string = null;
 			var sign:Sign = null;
-			var dict:flash.Dictionary = com.coder.core.controls.wealth.WealthElisor._instance.wealthHash;
+			var dict:flash.Dictionary = WealthElisor._instance.wealthHash;
 			for (var forinvar__ in dict.map) {
 				var path = dict.map[forinvar__][0];
 				arr = path.split("/");
@@ -48,7 +46,7 @@ module engine {
 			}
 		}
 
-		public loadWealth(wealthData:com.coder.core.controls.wealth.WealthData, lc:flash.LoaderContext = null) {
+		public loadWealth(wealthData:WealthData, lc:flash.LoaderContext = null) {
 			if (!wealthData) {
 				return;
 			}
@@ -68,12 +66,12 @@ module engine {
 				sign.isPend = true;
 				sign.wealth_id = owner;
 				var loader:com.coder.interfaces.display.ILoader = null;
-				if (wealthData.type == com.coder.core.controls.wealth.WealthConst.BING_WEALTH || wealthData.dataFormat == egret.URLLoaderDataFormat.BINARY) {
+				if (wealthData.type == WealthConst.BING_WEALTH || wealthData.dataFormat == egret.URLLoaderDataFormat.BINARY) {
 					loader = new com.coder.core.displays.items.unit.BingLoader();
 					(<egret.URLLoader>(loader)).dataFormat = wealthData.dataFormat;
 					loader.loadElemt(wealthData.url, flash.bind(this._callSuccess_, this), flash.bind(this._callError_, this), flash.bind(this._callProgress_, this), lc ? lc : this.loaderContext);
 				}
-				else if (wealthData.type == com.coder.core.controls.wealth.WealthConst.TXT_WEALTH || wealthData.type == com.coder.core.controls.wealth.WealthConst.IMG_WEALTH) {
+				else if (wealthData.type == WealthConst.TXT_WEALTH || wealthData.type == WealthConst.IMG_WEALTH) {
 					loader = new com.coder.core.displays.items.unit.DisplayLoader();
 					loader.loadElemt(wealthData.url, flash.bind(this._callSuccess_, this), flash.bind(this._callError_, this), flash.bind(this._callProgress_, this), lc ? lc : this.loaderContext);
 				}
@@ -91,16 +89,16 @@ module engine {
 			if (!wealths || wealths.length == 0) {
 				return;
 			}
-			var wealthData:com.coder.core.controls.wealth.WealthData = null;
+			var wealthData:WealthData = null;
 			var wealthQueue:any = null;
 			for (var wealth_id_key_a in wealths) {
 				var wealth_id:string = wealths[wealth_id_key_a];
-				wealthData = com.coder.core.controls.wealth.WealthData.getWealthData(wealth_id);
+				wealthData = WealthData.getWealthData(wealth_id);
 				if (wealthData) {
-					wealthQueue = com.coder.core.controls.wealth.WealthQueueAlone.getWealthQueue(wealthData.wid);
+					wealthQueue = WealthQueueAlone.getWealthQueue(wealthData.wid);
 					if (wealthQueue) {
-						if (flash.As3is(wealthQueue, com.coder.core.controls.wealth.WealthQueueAlone)) {
-							(<com.coder.core.controls.wealth.WealthQueueAlone>(wealthQueue)).setStateLimitIndex();
+						if (flash.As3is(wealthQueue, WealthQueueAlone)) {
+							(<WealthQueueAlone>(wealthQueue)).setStateLimitIndex();
 						}
 						if ("isPended" == proto) {
 							wealthData.isPend = value;
@@ -128,9 +126,9 @@ module engine {
 			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(path), Sign);
 			if (sign) {
 				com.coder.utils.log.Log.error(this, sign.path);
-				var wealthData:com.coder.core.controls.wealth.WealthData = com.coder.core.controls.wealth.WealthData.getWealthData(sign.wealth_id);
+				var wealthData:WealthData = WealthData.getWealthData(sign.wealth_id);
 				if (wealthData && sign.tryNum > 0) {
-					com.coder.core.controls.wealth.WealthStoragePort.disposeLoaderByWealth(sign.path);
+					WealthStoragePort.disposeLoaderByWealth(sign.path);
 					sign.tryNum -= 1;
 					sign.isPend = false;
 					this.loadWealth(wealthData, sign.lc);
@@ -155,13 +153,13 @@ module engine {
 			if (!sign) {
 				return;
 			}
-			var wealthData:com.coder.core.controls.wealth.WealthData = null;
+			var wealthData:WealthData = null;
 			var wealthQueue:any = null;
 			if (state == 0 || state == 1) {
 				while (sign.wealths.length) {
-					wealthData = com.coder.core.controls.wealth.WealthData.getWealthData(sign.wealths.shift());
+					wealthData = WealthData.getWealthData(sign.wealths.shift());
 					if (wealthData && wealthData.loaded == false && com.coder.engine.Asswc.enabled) {
-						wealthQueue = <Object>flash.As3As(com.coder.core.controls.wealth.WealthQueueAlone.getWealthQueue(wealthData.wid), Object);
+						wealthQueue = <Object>flash.As3As(WealthQueueAlone.getWealthQueue(wealthData.wid), Object);
 						if (wealthQueue) {
 							if (state == 0) {
 								wealthQueue["_callError_" + ""](wealthData.id);
@@ -176,10 +174,10 @@ module engine {
 			else {
 				for (var wealthId_key_a in sign.wealths) {
 					var wealthId:string = sign.wealths[wealthId_key_a];
-					wealthData = com.coder.core.controls.wealth.WealthData.getWealthData(wealthId);
+					wealthData = WealthData.getWealthData(wealthId);
 					if (wealthData) {
-						wealthQueue = <Object>flash.As3As(com.coder.core.controls.wealth.WealthQueueAlone.getWealthQueue(wealthData.wid), Object);
-						if (wealthQueue && wealthQueue["name" + ""] != com.coder.core.controls.wealth.WealthConst.AVATAR_REQUEST_WEALTH) {
+						wealthQueue = <Object>flash.As3As(WealthQueueAlone.getWealthQueue(wealthData.wid), Object);
+						if (wealthQueue && wealthQueue["name" + ""] != WealthConst.AVATAR_REQUEST_WEALTH) {
 							wealthQueue["_callProgress_" + ""](wealthData.id, bytesLoaded, bytesTotal);
 						}
 					}
@@ -204,7 +202,7 @@ module engine {
 		}
 
 		public cancelWealth(wealth_id:string) {
-			var wealthData:com.coder.core.controls.wealth.WealthData = com.coder.core.controls.wealth.WealthData.getWealthData(wealth_id);
+			var wealthData:WealthData = WealthData.getWealthData(wealth_id);
 			if (wealthData) {
 				var url:string = wealthData.url;
 				var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(url), Sign);
@@ -213,7 +211,7 @@ module engine {
 					if (index != -1) {
 						sign.wealths.splice(index, 1);
 						if (sign.isPend && !sign.isLoaded && sign.wealths.length == 0) {
-							com.coder.core.controls.wealth.WealthStoragePort.disposeLoaderByWealth(url);
+							WealthStoragePort.disposeLoaderByWealth(url);
 						}
 					}
 				}
@@ -227,7 +225,7 @@ module engine {
 			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(url), Sign);
 			if (sign && sign.isPend && !sign.isLoaded) {
 				sign.wealths = new Array<string>();
-				com.coder.core.controls.wealth.WealthStoragePort.disposeLoaderByWealth(url);
+				WealthStoragePort.disposeLoaderByWealth(url);
 			}
 		}
 

@@ -94,6 +94,7 @@ module engine {
         }
 
         private init() {
+            this.drawShadow();
             this.touchEnabled = this.touchChildren = false;
 
             this.nodeTree = new engine.NodeTree(SceneConst.SCENE_ITEM_NODER);
@@ -248,6 +249,19 @@ module engine {
                     this.middleLayer.addChild(display);
                 }
                 idx++;
+            }
+        }
+
+        private drawShadow() {
+            if (Engine.char_shadow == null) {
+                var shape:egret.Shape = new egret.Shape();
+                shape.graphics.beginGradientFill(egret.GradientType.LINEAR, [0, 0, 0, 0], [0.9, 0.8, 0.7, 0.6], [1, 1, 1, 1]);
+                shape.graphics.drawEllipse(0, 0, 60, 40);
+                shape.filters = [new egret.BlurFilter(20, 10)];
+
+                var bmd:egret.RenderTexture = new egret.RenderTexture();
+                bmd.drawToTexture(shape);
+                Engine.char_shadow = bmd;
             }
         }
 
