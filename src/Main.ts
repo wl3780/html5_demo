@@ -36,16 +36,11 @@ class Main extends egret.DisplayObjectContainer {
         } else if (event.groupName == "assets") {
             this.createHUD();
             this.createGameScene();
-        } else if(event.groupName.indexOf("mid") != -1) {
-            engine.AvatarRequestManager.getInstance().onWealthLoadFunc(event.groupName);
         }
     }
 
     private onResourceLoadError(event:RES.ResourceEvent) {
         console.error("资源加载失败:" + event.groupName);
-        if (event.groupName.indexOf("mid") != -1) {
-            engine.AvatarRequestManager.getInstance().onWealthErrorFunc(event.groupName);
-        }
     }
 
     private onResize(evt:egret.Event) {
@@ -58,10 +53,10 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.x = 2500;
         this.scene.mainChar.y = 1300;
         this.scene.changeScene("10321");
-        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "100000002");
+        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "npc054");
         this.main_avatar_index = 1;
 
-        for (var i:number=0; i<500; i++) {
+        for (var i:number=0; i<0; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;

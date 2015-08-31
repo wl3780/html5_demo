@@ -2,9 +2,9 @@ module engine {
 
 	export class AvatarActionData extends Proto {
 
-		public static _instanceHash_:Map<string, AvatarActionData> = new Map<string, AvatarActionData>();
-		public static _recoverQueue_:Array<AvatarActionData> = [];
-		public static _recoverIndex_:number = 50;
+		private static _instanceHash_:Map<string, AvatarActionData> = new Map<string, AvatarActionData>();
+		private static _recoverQueue_:Array<AvatarActionData> = [];
+		private static _recoverIndex_:number = 50;
 
 		public type:string;
 		public idName:string;
@@ -17,9 +17,10 @@ module engine {
 
 		private _avatarDataFormatGroup_id_:string;
 		private _currAction_:string = ActionConst.STAND;
-		private _currDir_:number;
-		private _totalFrames_:number;
-		private _currFrame_:number;
+		private _currDir_:number = 0;
+		private  _currInterval_:number = 0;
+		private _totalFrames_:number = 0;
+		private _currFrame_:number = 0;
 
 		private _actionGroup_:AvatarActionFormatGroup;
 		private _actionFormat_:AvatarActionFormat;
@@ -52,6 +53,7 @@ module engine {
 			this.isReady = true;
 			this._actionFormat_ = this._actionGroup_.takeAction(this._currAction_);
 			this._totalFrames_ = this._actionFormat_.totalFrames;
+			this.loadActSWF(this._currAction_, this._currDir_);
 		}
 
 		public get currInterval():number {
@@ -60,9 +62,12 @@ module engine {
 				if (frame <= -1) {
 					return 0;
 				}
-				return this._actionFormat_.actionSpeed;
+				if (frame >= this._actionFormat_.intervalTimes.length) {
+					frame = this._actionFormat_.intervalTimes.length - 1;
+				}
+				this._currInterval_ = this._actionFormat_.intervalTimes[frame];
 			}
-			return 0;
+			return this._currInterval_;
 		}
 
 		public getActionFormat(act:string):AvatarActionFormat {
@@ -76,12 +81,19 @@ module engine {
 
 		public getBitmapData(dir:number, frame:number):egret.Texture {
 			if (this._actionFormat_) {
-				var link:string = this._actionFormat_.getLink(dir, frame);
-				var bmd:egret.Texture = AvatarRequestManager.getInstance().getBitmapData(this.idName, link);
-				return bmd;
-			} else {
-				return null;
+				var key:string = this.idName + Engine.LINE + this._currAction_ + Engine.LINE + this._currDir_;
+				var sheet:egret.SpriteSheet = AvatarRequestManager.getInstance().getBitmapData(key);
+				if (sheet) {
+					if (frame >= this._actionFormat_.bitmapdatas[dir].length) {
+						frame = this._actionFormat_.bitmapdatas[dir].length - 1;
+					}
+					var link:string = this._actionFormat_.bitmapdatas[dir][frame];
+					return sheet.getTexture(link);
+				} else {
+					this.loadActSWF(this._currAction_, dir);
+				}
 			}
+			return null;
 		}
 
 		public getBitmapDataOffsetX(dir:number, frame:number):number {
@@ -106,16 +118,6 @@ module engine {
 				}
 			}
 			return 0;
-		}
-
-		public getBitmapDataFlip(dir:number):boolean {
-			if (this._actionFormat_) {
-				if (this._actionFormat_.totalDir == 1) {
-					dir = 0;
-				}
-				return this._actionFormat_.bitmapFlips[dir];
-			}
-			return false;
 		}
 
 		public set avatarDataFormatGroup_id(value:string) {
@@ -158,6 +160,21 @@ module engine {
 		public dispose() {
 			super.dispose();
 			this.isDisposed = true;
+		}
+
+		private loadActSWF(act:string, dir:number) {
+			if (this.isDisposed) {
+				return;
+			}
+			if (this._actionGroup_ && this._actionGroup_.isLoaded) {
+				this._actionFormat_ = this._actionGroup_.takeAction(act);
+				if (this._actionFormat_) {
+					if (act == ActionConst.AttackWarm) {
+						act = ActionConst.ATTACK;
+					}
+					AvatarRequestManager.getInstance().loadAvatarSWF(this.idName, act, dir);
+				}
+			}
 		}
 
 	}

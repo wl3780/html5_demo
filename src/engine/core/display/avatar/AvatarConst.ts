@@ -73,7 +73,7 @@ module engine {
         /**
          * 跑
          */
-        public static RUN:string = "walk"//"run";
+        public static RUN:string = "run";
         /**
          * 站立
          */
@@ -109,30 +109,27 @@ module engine {
         /**
          * 技能
          */
-        public static SKILL:string = "skill1";
+        public static SKILL:string = "skill";
         /**
-         * 技能2
+         * 跳跃
          */
-        public static SKILL2:string = "jump";
-        /**
-         * 技能3
-         */
-        public static SKILL3:string = "skill3";
+        public static JUMP:string = "jump";
         /**
          * 攻击起手动作
          */
         public static AttackWarm:string = "attack_warm";
-        /**
-         * 技能起手动作
-         */
-        public static SkillWarm:string = "skill_warm";
 
         public static LoopActions:Array<string> = [
             ActionConst.AttackWarm,
-            ActionConst.SkillWarm,
             ActionConst.STAND,
             ActionConst.RUN,
             ActionConst.WALK
         ];
+
+        public static warmHash:any = {
+            attack:"attack_warm",
+            walk:"walk_warm",
+            run:"run_warm"
+        }
     }
 }

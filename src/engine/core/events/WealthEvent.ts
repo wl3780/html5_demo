@@ -9,8 +9,7 @@ module engine {
 		public wealth_id:string;
 		public wealthGroup_id:string;
 
-		public constructor(type:string, bubbles:boolean = false, cancelable:boolean = false)
-		{
+		public constructor(type:string, bubbles:boolean = false, cancelable:boolean = false) {
 			super(type, bubbles, cancelable);
 		}
 

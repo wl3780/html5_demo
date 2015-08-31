@@ -1,9 +1,9 @@
 module engine {
 	export class AvatarActionFormat extends Proto {
 
-		public static _instanceHash_:Map<string, AvatarActionFormat> = new Map<string, AvatarActionFormat>();
-		public static _recoverQueue_:Array<AvatarActionFormat> = [];
-		public static _recoverIndex_:number = 50;
+		private static _instanceHash_:Map<string, AvatarActionFormat> = new Map<string, AvatarActionFormat>();
+		private static _recoverQueue_:Array<AvatarActionFormat> = [];
+		private static _recoverIndex_:number = 50;
 
 		public idName:string;
 		public offset_x:number = 0;
@@ -17,7 +17,6 @@ module engine {
 		public totalDir:number = 0;
 		public totalTime:number = 0;
 		public isDisposed:boolean = false;
-		public path:string;
 
 		public intervalTimes:Array<number>;
 		public txs:Array<Array<number>>;
@@ -30,8 +29,6 @@ module engine {
 		public dirOffsetY:Array<number>;
 
 		private actState:any;
-
-		public bitmapFlips:Array<boolean>;
 
 		public constructor() {
 			super();
@@ -83,7 +80,6 @@ module engine {
 			this.max_rects = [];
 			this.dirOffsetX = [0,0,0,0,0,0,0,0];
 			this.dirOffsetY = [0,0,0,0,0,0,0,0];
-            this.bitmapFlips = new Array(8);
 		}
 
 		public recover() {
@@ -91,7 +87,7 @@ module engine {
 				return ;
 			}
 			AvatarActionFormat._instanceHash_.delete(this.id);
-			if(AvatarActionFormat._recoverQueue_.length <= AvatarActionFormat._recoverIndex_) {
+			if(AvatarActionFormat._recoverQueue_.length < AvatarActionFormat._recoverIndex_) {
 				AvatarActionFormat._recoverQueue_.push(this);
 			} else {
 				this.dispose();
@@ -104,9 +100,6 @@ module engine {
 		}
 
 		public getLink(dir:number, frame:number):string {
-			if (this.bitmapFlips[dir] == true) {
-				dir = 8-dir;
-			}
 			var key:string = this.idName + Engine.LINE + this.actionName + Engine.LINE + dir + Engine.LINE + frame;
 			if (this.totalDir == 1) {
 				key = this.idName + Engine.LINE + this.actionName + Engine.LINE + 0 + Engine.LINE + frame;
@@ -114,77 +107,5 @@ module engine {
 			return key;
 		}
 
-		public setup(actGroup:AvatarActionFormatGroup, config:any) {
-			this.oid = actGroup.id;
-			this.idName = actGroup.idName;
-			this.actionName = config.id;
-			this.totalFrames = config.frames;
-			this.actionSpeed = config.speed;
-			this.offset_x = config.offset_x;
-			this.offset_y = config.offset_y;
-			this.replay = config.replay;
-			if (this.replay == 0) {
-				this.replay = -1;
-			}
-
-			var dirList:Array<any> = config.action;
-			var dirLen:number = dirList.length;
-			var dirIdx:number = 0;
-			var frameData:any;
-			this.totalDir = dirLen;
-			if (dirLen == 1) {
-				frameData = dirList[0];
-				this.initFrameData(0, frameData.action);
-				while (dirIdx < 8) {
-					this.txs[dirIdx] = this.txs[0];
-					this.tys[dirIdx] = this.txs[0];
-					this.widths[dirIdx] = this.txs[0];
-					this.heights[dirIdx] = this.txs[0];
-					this.bitmapFlips[dirIdx] = false;
-					dirIdx++;
-				}
-			} else {
-				while (dirIdx < 8) {
-					if (dirIdx < dirLen) {
-						frameData = dirList[dirIdx];
-						this.initFrameData(dirIdx, frameData.action);
-						this.bitmapFlips[dirIdx] = false;
-					} else {
-						this.txs[dirIdx] = [];
-						var flipDirIdx:number = 8 - dirIdx;
-						var flipFrameIdx:number = 0;
-						while (flipFrameIdx < this.widths[flipDirIdx].length) {
-							var flipFrameX:number = this.widths[flipDirIdx][flipFrameIdx]*0 - this.txs[flipDirIdx][flipFrameIdx];
-							this.txs[dirIdx].push(flipFrameX);
-							flipFrameIdx++;
-						}
-						this.tys[dirIdx] = this.tys[flipDirIdx];
-						this.widths[dirIdx] = this.tys[flipDirIdx];
-						this.heights[dirIdx] = this.heights[flipDirIdx];
-						this.bitmapFlips[dirIdx] = true;
-					}
-					dirIdx++;
-				}
-			}
-		}
-		private initFrameData(dirIdx:number, frameDatas:Array<any>):void {
-			this.txs[dirIdx] = [];
-			this.tys[dirIdx] = [];
-			this.widths[dirIdx] = [];
-			this.heights[dirIdx] = [];
-
-			var frameLen:number = frameDatas.length;
-			if (frameLen > this.totalFrames) {
-				this.totalFrames = frameLen;
-			}
-			var frameIdx:number = 0;
-			while (frameIdx < frameLen) {
-				this.txs[dirIdx].push(<number>frameDatas[frameIdx].tx);
-				this.tys[dirIdx].push(<number>frameDatas[frameIdx].ty);
-				this.widths[dirIdx].push(<number>frameDatas[frameIdx].width);
-				this.heights[dirIdx].push(<number>frameDatas[frameIdx].height);
-				frameIdx++;
-			}
-		}
 	}
 }

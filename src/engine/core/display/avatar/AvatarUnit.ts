@@ -137,17 +137,16 @@ module engine {
 							var bmd:egret.Texture = actData.getBitmapData(this._currDir_, this._currFrame_);
 							var tx:number = actData.getBitmapDataOffsetX(this._currDir_, this._currFrame_);
 							var ty:number = actData.getBitmapDataOffsetY(this._currDir_, this._currFrame_);
-							var tf:boolean = actData.getBitmapDataFlip(this._currDir_);
 							if (actData.type == AvatarTypes.EFFECT_TYPE) {
-								owner.onBodyRender(AvatarRenderTypes.BODY_EFFECT, actData.type, bmd, tx, ty, tf);
+								owner.onBodyRender(AvatarRenderTypes.BODY_EFFECT, actData.type, bmd, tx, ty);
 							} else {
-								owner.onBodyRender(AvatarRenderTypes.BODY_TYPE, actData.type, bmd, tx, ty, tf);
+								owner.onBodyRender(AvatarRenderTypes.BODY_TYPE, actData.type, bmd, tx, ty);
 							}
 						}
 					});
 				}
 				if (passTime - durTime >= 0 || renderType == AvatarRenderTypes.PLAY_NEXT_RENDER) {
-					if (this._actNow_ != ActionConst.DEATH && this._actNow_ != ActionConst.AttackWarm && this._actNow_ != ActionConst.SkillWarm) {
+					if (this._actNow_ != ActionConst.DEATH && this._actNow_ != ActionConst.AttackWarm) {
 						this._currFrame_++;
 					}
 					this._bodyRenderTime_ = egret.getTimer();

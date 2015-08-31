@@ -29,7 +29,7 @@ module engine {
 		}
 
 		public addWealth(url:string, data:any = null, otherArgs:any = null, prio:number = -1):string {
-			if (this.hasWealth(url)) {
+			if (this.hasWealth(url) == true) {
 				return null;
 			}
 
@@ -39,11 +39,9 @@ module engine {
 			wealthData.proto = otherArgs;
 			wealthData.oid = this.id;
 			wealthData.wid = this.oid;
-			if (prio == -1) {
-				wealthData.prio = 0;
-			}
+			wealthData.prio = prio;
 			if (url.indexOf(EngineGlobal.SM_EXTENSION) != -1) {
-				wealthData.prio = 0;
+				wealthData.prio = 2;
 			}
 
 			this._wealthHash.set(wealthData.id, wealthData);
@@ -56,12 +54,14 @@ module engine {
 		}
 
 		public hasWealth(url:string):boolean {
+            var ret:boolean = false;
 			this._wealthList.forEach(item => {
 				if (item.url == url) {
-					return true;
+                    ret = true;
+					return;
 				}
 			});
-			return false;
+			return ret;
 		}
 
 		public removeWealthById(id:string) {
@@ -71,27 +71,29 @@ module engine {
 				var index:number = this._wealthList.indexOf(wealthData);
 				this._wealthList.splice(index, 1);
 				WealthElisor.getInstance().cancelWealth(wealthData.id);
-				wealthData.dispose();
 			}
 		}
 
 		public getNextNeedWealthData():WealthData {
+			var ret:WealthData = null;
 			this._wealthList.forEach(wealthData => {
-				if(this.type == WealthConst.BUBBLE_LEVEL) {	// 顺序执行
+				if (this.type == WealthConst.BUBBLE_LEVEL) {	// 顺序执行
 					if(wealthData.isLoaded == false) {
 						if (wealthData.isPended == false) {
-							return wealthData;
+							ret = wealthData;
+							return;
 						} else {
-							return null;
+							return;
 						}
 					}
 				} else {
 					if(wealthData.isLoaded == false && wealthData.isPended == false) {
-						return wealthData;
+						ret = wealthData;
+						return;
 					}
 				}
 			});
-			return null;
+			return ret;
 		}
 
 		public checkTotalFinish() {

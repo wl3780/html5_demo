@@ -43,14 +43,17 @@ module engine {
 		public set url(value:string) {
 			this._url = value;
 			if (value) {
-				this._suffix = value.split(".").pop();
-				this._suffix = this._suffix.split("?").shift();
+                this._suffix = value.split("?")[0];
+				this._suffix = this._suffix.split(".").pop();
 				if (Engine.TEXT_Files.indexOf(this._suffix) != -1) {
 					this._type = WealthConst.TXT_WEALTH;
+					this.dataFormat = egret.URLLoaderDataFormat.TEXT;
 				} else if (Engine.IMG_Files.indexOf(this._suffix) != -1) {
 					this._type = WealthConst.IMG_WEALTH;
+					this.dataFormat = egret.URLLoaderDataFormat.TEXTURE;
 				} else {
 					this._type = WealthConst.BING_WEALTH;
+					this.dataFormat = egret.URLLoaderDataFormat.BINARY;
 				}
 			}
 			this.time = egret.getTimer();

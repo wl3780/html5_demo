@@ -70,7 +70,7 @@ module engine {
 
 		}
 
-		public onBodyRender(renderType:string, avatarType:string, bitmapData:egret.Texture, tx:number, ty:number, tf?:boolean) {
+		public onBodyRender(renderType:string, avatarType:string, bitmapData:egret.Texture, tx:number, ty:number) {
 			if (bitmapData) {
 				var bitmap:egret.Bitmap = null;
 				if (this._hide_body_ == false) {
@@ -119,7 +119,7 @@ module engine {
 						this.bmd_wgid.texture = null;
 					}
 				}
-                this.setBitmapValue(bitmap, bitmapData, -tx, -ty, tf);
+                this.setBitmapValue(bitmap, bitmapData, -tx, -ty);
                 if (bitmap.texture && !bitmap.parent) {
                     this.addChild(bitmap);
                     this.updateBitmapDepth();
@@ -143,7 +143,7 @@ module engine {
 			}
 		}
 
-		public onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number, tf?:boolean) {
+		public onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number) {
 
 		}
 
@@ -228,7 +228,7 @@ module engine {
 			this._unit_.init();
 		}
 
-		private setBitmapValue(bitmap:egret.Bitmap, bitmapData:egret.Texture, vx:number, vy:number, tf:boolean) {
+		private setBitmapValue(bitmap:egret.Bitmap, bitmapData:egret.Texture, vx:number, vy:number) {
 			if (!bitmap) {
 				return;
 			}
@@ -249,11 +249,6 @@ module engine {
 					bitmap.texture = bitmapData;
                     bitmap.x = vx;
                     bitmap.y = vy;
-					if (tf) {
-						bitmap.scaleX = -1;
-					} else {
-						bitmap.scaleX = 1;
-					}
 				}
 			}
 		}

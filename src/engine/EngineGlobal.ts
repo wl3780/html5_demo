@@ -21,6 +21,24 @@ module engine {
 		public static version:string = "ver-1";
 		public static assetsHost:string;
 
+		public static SHADOW_ID:String = "mid_npc054";
+		public static MALE_SHADOW:String = "mid_ym1001";
+		public static FAMALE_SHADOW:String = "mid_yw1001";
+		public static MALE_BASE:string = "mid_wcx001";
+		public static FAMALE_BASE:string = "mid_wco001";
+
+		public static shadowAvatarGroup:AvatarActionFormatGroup;
+		public static shadowAvatarGroupMale:AvatarActionFormatGroup;
+		public static shadowAvatarGroupFamale:AvatarActionFormatGroup;
+		public static baseAvatarGroupMale:AvatarActionFormatGroup;
+		public static baseAvatarGroupFamale:AvatarActionFormatGroup;
+
+		public static shadowAvatarData:AvatarActionData;
+		public static shadowAvatarDataMale:AvatarActionData;
+		public static shadowAvatarDataFamale:AvatarActionData;
+		public static baseAvatarDataMale:AvatarActionData;
+		public static baseAvatarDataFamale:AvatarActionData;
+
 		public static TYPE_REFLEX:Object = {
 			mid:"clothes",
 			eid:"effects",

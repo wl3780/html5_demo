@@ -143,8 +143,7 @@ module engine {
 						if (wealthQueue) {
 							if (state == 0) {
 								wealthQueue["_callError_"](wealthData.id);
-							}
-							else if (state == 1) {
+							} else if (state == 1) {
 								wealthQueue["_callSuccess_"](wealthData.id);
 							}
 						}

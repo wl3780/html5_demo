@@ -63,7 +63,7 @@ module engine {
             return this._className;
         }
 
-        private _successFunc_(evt:egret.Event):void {
+        private _successFunc_(evt:egret.Event) {
             this.removeEventListener(egret.Event.COMPLETE, this._successFunc_, this);
             this.removeEventListener(egret.IOErrorEvent.IO_ERROR, this._errorFunc_, this);
             this.removeEventListener(egret.ProgressEvent.PROGRESS, this._progressFunc_, this);
@@ -75,7 +75,7 @@ module engine {
             this._errorFunc = null;
         }
 
-        private _errorFunc_(evt:egret.IOErrorEvent):void {
+        private _errorFunc_(evt:egret.IOErrorEvent) {
             this.removeEventListener(egret.Event.COMPLETE, this._successFunc_, this);
             this.removeEventListener(egret.IOErrorEvent.IO_ERROR, this._errorFunc_, this);
             this.removeEventListener(egret.ProgressEvent.PROGRESS, this._progressFunc_, this);
@@ -87,7 +87,7 @@ module engine {
             this._errorFunc = null;
         }
 
-        private _progressFunc_(evt:egret.ProgressEvent):void {
+        private _progressFunc_(evt:egret.ProgressEvent) {
             this._progressFunc.apply(this._thisObject, [this.path, evt.bytesLoaded, evt.bytesTotal]);
         }
 

@@ -126,12 +126,13 @@ module engine {
 		}
 
 		private getNeedWealthGroup():WealthGroup {
+            var ret:WealthGroup = null;
 			this._wealthGroupQueue.forEach(group => {
 				if (group.loaded == false) {
-					return group;
+                    ret = group;
 				}
 			});
-			return null;
+			return ret;
 		}
 
 		public _callSuccess_(wealth_id:string) {

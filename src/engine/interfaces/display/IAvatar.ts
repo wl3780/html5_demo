@@ -7,8 +7,8 @@ module engine {
 
         loadAvatarPart(type:string, idNum:string, random?:number);
 
-        onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number, tf?:boolean);
+        onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number);
 
-        onBodyRender(renderType:string, bitmapType:string, bitmapData:egret.Texture, tx:number, ty:number, tf?:boolean);
+        onBodyRender(renderType:string, bitmapType:string, bitmapData:egret.Texture, tx:number, ty:number);
     }
 }
