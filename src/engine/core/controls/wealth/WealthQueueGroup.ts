@@ -15,6 +15,7 @@ module engine {
 		private _delay:number = 0;
 		private _delayTime:number = 0;
 		private _limitIndex:number = 2;
+		private _limitIndexMax:number = 2;
 		private _stop:boolean = false;
 
 		private wealthElisor:WealthElisor = WealthElisor.getInstance();
@@ -76,6 +77,20 @@ module engine {
 			return result;
 		}
 
+		public setStateLimitIndex(on:boolean) {
+			if (on) {
+				this._limitIndex--;
+				if (this._limitIndex < 0) {
+					this._limitIndex = 0;
+				}
+			} else {
+				this._limitIndex++;
+				if (this._limitIndex > this._limitIndexMax) {
+					this._limitIndex = this._limitIndexMax;
+				}
+			}
+		}
+
 		private loop() {
 			if (this._stop) {
 				return ;
@@ -96,7 +111,6 @@ module engine {
 						wealthData = wealthGroup.getNextNeedWealthData();
 						if (wealthData) {
 							this.wealthElisor.loadWealth(wealthData);
-							this._limitIndex--;
 						} else {
 							return;
 						}

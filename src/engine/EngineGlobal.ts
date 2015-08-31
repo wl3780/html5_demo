@@ -4,8 +4,8 @@ module engine {
 		public static WEALTH_QUEUE_ALONE_SIGN:String = "【WQA】";
 		public static WEALTH_QUEUE_GROUP_SIGN:String = "【WQG】";
 
-		public static SM_EXTENSION:String = ".sm";
-		public static TMP_EXTENSION:String = ".tmp";
+		public static SM_EXTENSION:string = ".sm";
+		public static TMP_EXTENSION:string = ".tmp";
 
 		public static IMAGE_WIDTH:number = 320;
 		public static IMAGE_HEIGHT:number = 180;

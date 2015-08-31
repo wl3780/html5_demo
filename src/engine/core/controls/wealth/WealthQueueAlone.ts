@@ -38,10 +38,17 @@ module engine {
 			this._limitIndexMax = value;
 		}
 
-		public setStateLimitIndex() {
-			this._limitIndex--;
-			if (this._limitIndex < 0) {
-				this._limitIndex = 0;
+		public setStateLimitIndex(on:boolean) {
+			if (on) {
+				this._limitIndex--;
+				if (this._limitIndex < 0) {
+					this._limitIndex = 0;
+				}
+			} else {
+				this._limitIndex++;
+				if (this._limitIndex > this._limitIndexMax) {
+					this._limitIndex = this._limitIndexMax;
+				}
 			}
 		}
 

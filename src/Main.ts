@@ -97,6 +97,8 @@ class Main extends egret.DisplayObjectContainer {
     
     private createHUD() {
         this.createButton(this.tapFunc, "变身", 400, 0);
+        var alone: engine.WealthQueueAlone;
+        var group: engine.WealthQueueGroup;
     }
 
     private createButton(handler:Function, label:string, x:number, y:number) {

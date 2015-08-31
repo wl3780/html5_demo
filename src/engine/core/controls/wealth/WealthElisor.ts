@@ -2,15 +2,14 @@ module engine {
 	export class WealthElisor extends egret.HashObject {
 
 		public static instanceHash:Map<string, IWealthQueue> = new Map<string, IWealthQueue>();
-		public static isClearing:boolean = false;
-		public static loaderInstanceHash:com.coder.utils.Hash;
-		public static _instance:WealthElisor;
 
-		private wealthHash:Map<>;
+		private static _instance:WealthElisor;
+
+		private wealthHash:Map<string, Sign>;
 
 		public constructor() {
 			super();
-			this.wealthHash = new Map<>();
+			this.wealthHash = new Map<string, Sign>();
 		}
 
 		public static getInstance():WealthElisor {
@@ -21,101 +20,79 @@ module engine {
 		}
 
 		public static removeSign(path:string) {
-			var dict:flash.Dictionary = WealthElisor._instance.wealthHash;
-			var sign:Sign = <Sign>flash.As3As(dict.getItem(path), Sign);
+			var dict:Map<string, Sign> = WealthElisor._instance.wealthHash;
+			var sign:Sign = dict.get(path);
 			if (sign) {
 				sign.dispose();
 			}
-			dict.delItem(path);
+			dict.delete(path);
 		}
 
-		public static clear(unHash:com.coder.utils.Hash) {
-			var arr:Array<any> = null;
+		public static clear(unHash:any) {
 			var file:string = null;
 			var sign:Sign = null;
-			var dict:flash.Dictionary = WealthElisor._instance.wealthHash;
-			for (var forinvar__ in dict.map) {
-				var path = dict.map[forinvar__][0];
-				arr = path.split("/");
-				file = arr[arr.length - 1];
-				if (unHash["has" + ""](file)) {
-					sign = dict.getItem(path);
+			var dict:Map<string, Sign> = WealthElisor._instance.wealthHash;
+			for (var path in dict) {
+				file = path.split("/").pop();
+				file = file.split("?")[0];
+				if (unHash[file]) {
+					sign = dict.get(path);
 					sign.dispose();
-					dict.delItem(path);
+					dict.delete(path);
 				}
 			}
 		}
 
-		public loadWealth(wealthData:WealthData, lc:flash.LoaderContext = null) {
-			if (!wealthData) {
-				return;
-			}
+		public loadWealth(wealthData:WealthData) {
 			var url:string = wealthData.url;
 			var owner:string = wealthData.id;
-			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(url), Sign);
+			var sign:Sign = this.wealthHash.get(url);
 			if (sign == null) {
 				sign = new Sign();
 				sign.path = url;
-				this.wealthHash.setItem(url, sign);
+				this.wealthHash.set(url, sign);
 			}
 			if (sign.wealths.indexOf(owner) == -1) {
 				sign.wealths.push(owner);
 			}
-			if (!sign.isLoaded && !sign.isPend) {
-				sign.lc = lc;
-				sign.isPend = true;
+			if (!sign.isLoaded && !sign.isPended) {
+				sign.isPended = true;
 				sign.wealth_id = owner;
-				var loader:com.coder.interfaces.display.ILoader = null;
-				if (wealthData.type == WealthConst.BING_WEALTH || wealthData.dataFormat == egret.URLLoaderDataFormat.BINARY) {
-					loader = new com.coder.core.displays.items.unit.BingLoader();
-					(<egret.URLLoader>(loader)).dataFormat = wealthData.dataFormat;
-					loader.loadElemt(wealthData.url, flash.bind(this._callSuccess_, this), flash.bind(this._callError_, this), flash.bind(this._callProgress_, this), lc ? lc : this.loaderContext);
-				}
-				else if (wealthData.type == WealthConst.TXT_WEALTH || wealthData.type == WealthConst.IMG_WEALTH) {
-					loader = new com.coder.core.displays.items.unit.DisplayLoader();
-					loader.loadElemt(wealthData.url, flash.bind(this._callSuccess_, this), flash.bind(this._callError_, this), flash.bind(this._callProgress_, this), lc ? lc : this.loaderContext);
-				}
-				this.updateWealthState(sign.wealths, "isPended", sign.isPend);
-			}
-			else if (!sign.isLoaded && sign.isPend) {
-				this.updateWealthState(sign.wealths, "isPended", sign.isPend);
-			}
-			else if (sign.isLoaded) {
-				this.updateWealthState(sign.wealths, "loaded", sign.isLoaded);
+				var loader:ILoader = new WealthLoader();
+				loader.dataFormat = wealthData.dataFormat;
+				loader.loadElemt(wealthData.url, this._callSuccess_, this._callError_, this._callProgress_, this);
+				this.updateWealthState(sign.wealths, "isPended", sign.isPended);
+			} else if (!sign.isLoaded && sign.isPended) {
+				this.updateWealthState(sign.wealths, "isPended", sign.isPended);
+			} else if (sign.isLoaded) {
+				this.updateWealthState(sign.wealths, "isLoaded", sign.isLoaded);
 			}
 		}
 
 		private updateWealthState(wealths:Array<string>, proto:string, value:boolean) {
-			if (!wealths || wealths.length == 0) {
-				return;
-			}
 			var wealthData:WealthData = null;
-			var wealthQueue:any = null;
-			for (var wealth_id_key_a in wealths) {
-				var wealth_id:string = wealths[wealth_id_key_a];
+			var wealthQueue:IWealthQueue = null;
+			wealths.forEach(wealth_id => {
 				wealthData = WealthData.getWealthData(wealth_id);
 				if (wealthData) {
-					wealthQueue = WealthQueueAlone.getWealthQueue(wealthData.wid);
+					wealthQueue = WealthElisor.instanceHash.get(wealthData.wid);
 					if (wealthQueue) {
-						if (flash.As3is(wealthQueue, WealthQueueAlone)) {
-							(<WealthQueueAlone>(wealthQueue)).setStateLimitIndex();
-						}
 						if ("isPended" == proto) {
-							wealthData.isPend = value;
-						}
-						else if ("loaded" == proto) {
-							wealthData.loaded = value;
-							if (wealthData.loaded) {
-								wealthQueue["_callSuccess_" + ""](wealthData.id);
+							wealthData.isPended = value;
+							wealthQueue.setStateLimitIndex(true);
+						} else if ("isLoaded" == proto) {
+							wealthData.isLoaded = value;
+							if (wealthData.isLoaded) {
+								wealthQueue["_callSuccess_"](wealthData.id);
 							}
 						}
 					}
 				}
-			}
+			});
 		}
 
 		protected _callSuccess_(path:string) {
-			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(path), Sign);
+			var sign:Sign = this.wealthHash.get(path);
 			if (sign) {
 				sign.isLoaded = true;
 				this.update(path, 1);
@@ -123,17 +100,20 @@ module engine {
 		}
 
 		protected _callError_(path:string) {
-			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(path), Sign);
+			var sign:Sign = this.wealthHash.get(path);
 			if (sign) {
-				com.coder.utils.log.Log.error(this, sign.path);
+				console.error("加载失败：", sign.path);
 				var wealthData:WealthData = WealthData.getWealthData(sign.wealth_id);
 				if (wealthData && sign.tryNum > 0) {
+					// 重新加载，恢复加载剩余次数
+					var wealthQueue:IWealthQueue = WealthElisor.instanceHash.get(wealthData.wid);
+					wealthQueue.setStateLimitIndex(false);
+
 					WealthStoragePort.disposeLoaderByWealth(sign.path);
 					sign.tryNum -= 1;
-					sign.isPend = false;
-					this.loadWealth(wealthData, sign.lc);
-				}
-				else {
+					sign.isPended = false;
+					this.loadWealth(wealthData);
+				} else {
 					sign.isLoaded = true;
 					this.update(path, 0);
 				}
@@ -141,15 +121,15 @@ module engine {
 		}
 
 		protected _callProgress_(path:string, bytesLoaded:number, bytesTotal:number) {
-			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(path), Sign);
+			var sign:Sign = this.wealthHash.get(path);
 			if (sign) {
-				sign.isPend = true;
+				sign.isPended = true;
 				this.update(path, 2, bytesLoaded, bytesTotal);
 			}
 		}
 
 		public update(url:string, state:number, bytesLoaded:number = 0, bytesTotal:number = 0) {
-			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(url), Sign);
+			var sign:Sign = this.wealthHash.get(url);
 			if (!sign) {
 				return;
 			}
@@ -158,43 +138,41 @@ module engine {
 			if (state == 0 || state == 1) {
 				while (sign.wealths.length) {
 					wealthData = WealthData.getWealthData(sign.wealths.shift());
-					if (wealthData && wealthData.loaded == false && com.coder.engine.Asswc.enabled) {
-						wealthQueue = <Object>flash.As3As(WealthQueueAlone.getWealthQueue(wealthData.wid), Object);
+					if (wealthData && wealthData.isLoaded == false && Engine.enabled) {
+						wealthQueue = WealthElisor.instanceHash.get(wealthData.wid);
 						if (wealthQueue) {
 							if (state == 0) {
-								wealthQueue["_callError_" + ""](wealthData.id);
+								wealthQueue["_callError_"](wealthData.id);
 							}
 							else if (state == 1) {
-								wealthQueue["_callSuccess_" + ""](wealthData.id);
+								wealthQueue["_callSuccess_"](wealthData.id);
 							}
 						}
 					}
 				}
-			}
-			else {
-				for (var wealthId_key_a in sign.wealths) {
-					var wealthId:string = sign.wealths[wealthId_key_a];
+			} else {
+				sign.wealths.forEach(wealthId => {
 					wealthData = WealthData.getWealthData(wealthId);
 					if (wealthData) {
-						wealthQueue = <Object>flash.As3As(WealthQueueAlone.getWealthQueue(wealthData.wid), Object);
-						if (wealthQueue && wealthQueue["name" + ""] != WealthConst.AVATAR_REQUEST_WEALTH) {
-							wealthQueue["_callProgress_" + ""](wealthData.id, bytesLoaded, bytesTotal);
+						wealthQueue = WealthElisor.instanceHash.get(wealthData.wid);
+						if (wealthQueue && wealthQueue.name != WealthConst.AVATAR_REQUEST_WEALTH) {
+							wealthQueue["_callProgress_"](wealthData.id, bytesLoaded, bytesTotal);
 						}
 					}
-				}
+				});
 			}
 		}
 
 		public checkWealthPendSatte(url:string):boolean {
-			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(url), Sign);
+			var sign:Sign = this.wealthHash.get(url);
 			if (sign) {
-				return sign.isPend;
+				return sign.isPended;
 			}
 			return false;
 		}
 
 		public checkWealthHasCache(url:string):boolean {
-			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(url), Sign);
+			var sign:Sign = this.wealthHash.get(url);
 			if (sign) {
 				return sign.isLoaded;
 			}
@@ -205,12 +183,12 @@ module engine {
 			var wealthData:WealthData = WealthData.getWealthData(wealth_id);
 			if (wealthData) {
 				var url:string = wealthData.url;
-				var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(url), Sign);
+				var sign:Sign = this.wealthHash.get(url);
 				if (sign) {
 					var index:number = sign.wealths.indexOf(wealth_id);
 					if (index != -1) {
 						sign.wealths.splice(index, 1);
-						if (sign.isPend && !sign.isLoaded && sign.wealths.length == 0) {
+						if (sign.isPended && !sign.isLoaded && sign.wealths.length == 0) {
 							WealthStoragePort.disposeLoaderByWealth(url);
 						}
 					}
@@ -219,40 +197,35 @@ module engine {
 		}
 
 		public cancelByPath(url:string) {
-			if (!url) {
-				return;
-			}
-			var sign:Sign = <Sign>flash.As3As(this.wealthHash.getItem(url), Sign);
-			if (sign && sign.isPend && !sign.isLoaded) {
-				sign.wealths = new Array<string>();
+			var sign:Sign = this.wealthHash.get(url);
+			if (sign && sign.isPended && !sign.isLoaded) {
+				sign.wealths.length = 0;
 				WealthStoragePort.disposeLoaderByWealth(url);
 			}
 		}
 
 	}
 
-	class Sign extends com.coder.core.protos.Proto {
+	class Sign extends Proto {
 
 		public tryNum:number = 1;
 		public path:string;
 		public wealths:Array<string>;
-		public isPend:boolean = false;
+		public isPended:boolean = false;
 		public isLoaded:boolean = false;
 		public wealth_id:string;
-		public lc:flash.LoaderContext;
 
 		public constructor() {
 			super();
-			this.wealths = new Array<string>();
+			this.wealths = [];
 		}
 
 		public dispose() {
 			super.dispose();
-			this.lc = null;
 			this.path = null;
 			this.wealths = null;
 			this.wealth_id = null;
 		}
-
 	}
+
 }

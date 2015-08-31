@@ -11,6 +11,7 @@ module engine {
         private _successFunc:Function;
         private _errorFunc:Function;
         private _progressFunc:Function;
+        private _thisObject:any;
 
         public constructor(request?:egret.URLRequest) {
             super(request);
@@ -18,11 +19,12 @@ module engine {
             WealthStoragePort.addLoader(this);
         }
 
-        public loadElemt(path:string, successFunc:(string)=>void = null, errorFunc:(string)=>void = null, progressFunc:(string,number,number)=>void = null):void {
+        public loadElemt(path:string, successFunc:Function, errorFunc:Function = null, progressFunc:Function = null, thisObject:any = null) {
             this.path = path;
             this._successFunc = successFunc;
             this._errorFunc = errorFunc;
             this._progressFunc = progressFunc;
+            this._thisObject = thisObject;
 
             if (this._successFunc) {
                 this.addEventListener(egret.Event.COMPLETE, this._successFunc_, this);
@@ -44,6 +46,7 @@ module engine {
             this._successFunc = null;
             this._progressFunc = null;
             this._errorFunc = null;
+            this._thisObject = null;
             this.removeEventListener(egret.Event.COMPLETE, this._successFunc_, this);
             this.removeEventListener(egret.IOErrorEvent.IO_ERROR, this._errorFunc_, this);
             this.removeEventListener(egret.ProgressEvent.PROGRESS, this._progressFunc_, this);
@@ -61,27 +64,31 @@ module engine {
         }
 
         private _successFunc_(evt:egret.Event):void {
-            this._successFunc.apply(null, [this.path]);
-            this._successFunc = null;
-            this._progressFunc = null;
-            this._errorFunc = null;
             this.removeEventListener(egret.Event.COMPLETE, this._successFunc_, this);
             this.removeEventListener(egret.IOErrorEvent.IO_ERROR, this._errorFunc_, this);
             this.removeEventListener(egret.ProgressEvent.PROGRESS, this._progressFunc_, this);
+            WealthStoragePort.depositWealth(this.path, this.id);
+
+            this._successFunc.apply(this._thisObject, [this.path]);
+            this._successFunc = null;
+            this._progressFunc = null;
+            this._errorFunc = null;
         }
 
         private _errorFunc_(evt:egret.IOErrorEvent):void {
-            this._errorFunc.apply(null, [this.path]);
-            this._successFunc = null;
-            this._progressFunc = null;
-            this._errorFunc = null;
             this.removeEventListener(egret.Event.COMPLETE, this._successFunc_, this);
             this.removeEventListener(egret.IOErrorEvent.IO_ERROR, this._errorFunc_, this);
             this.removeEventListener(egret.ProgressEvent.PROGRESS, this._progressFunc_, this);
+            WealthStoragePort.depositWealth(this.path, this.id);
+
+            this._errorFunc.apply(this._thisObject, [this.path]);
+            this._successFunc = null;
+            this._progressFunc = null;
+            this._errorFunc = null;
         }
 
         private _progressFunc_(evt:egret.ProgressEvent):void {
-            this._progressFunc.apply(null, [this.path, evt.bytesLoaded, evt.bytesTotal]);
+            this._progressFunc.apply(this._thisObject, [this.path, evt.bytesLoaded, evt.bytesTotal]);
         }
 
     }
