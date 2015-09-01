@@ -54,15 +54,19 @@ module engine {
 		public loadAvatarPart(avatarType:string, idNum:string, random:number) {
 			var dataId:string = AvatarRequestManager.getInstance().loadAvatar(this.id, avatarType, idNum);
 			var actData:AvatarActionData = AvatarActionData.takeAvatarActionData(dataId);
+            var tmpData:AvatarActionData = this.mainActionData;
 			if (this.mainActionData == null || avatarType == AvatarTypes.BODY_TYPE) {
 				this.mainActionData = actData;
 				this.mainActionData.random = random;
 				this.mainActionData.currAction = this._actNow_;
 				this.mainActionData.currDir = this._currDir_;
-				if (this._currFrame_ >= this.mainActionData.totalFrames) {
+				if (this._currFrame_ > this.mainActionData.totalFrames) {
 					this._currFrame_ = 0;
 				}
 				this.mainActionData.currFrame = this._currFrame_;
+				if (tmpData) {    // 已有数据更新
+                    this.mainActionData.stopFrame = tmpData.stopFrame;
+				}
 			}
 			this.bodyPartHash.set(avatarType, actData);
 		}
@@ -87,10 +91,10 @@ module engine {
 						this.mainActionData.currFrame = this._currFrame_;
 					}
 				}
-				if (stopFrame != -1) {
-					this.mainActionData.stopFrame = stopFrame;
-				} else if (action == ActionConst.DEATH) {
+				if (action == ActionConst.DEATH) {
 					this.mainActionData.stopFrame = this.mainActionData.totalFrames - 1;
+				} else {
+                    this.mainActionData.stopFrame = stopFrame;
 				}
 				this._actNow_ = this._actNext_ = action;
 				this.onBodyRender(renderType);
@@ -146,7 +150,9 @@ module engine {
 					});
 				}
 				if (passTime - durTime >= 0 || renderType == AvatarRenderTypes.PLAY_NEXT_RENDER) {
-					if (this._actNow_ != ActionConst.DEATH && this._actNow_ != ActionConst.AttackWarm) {
+    				// 调试代码
+                    console.log(this._actNow_+":"+this._currFrame_+"--"+durTime);
+					if (this._actNow_ != ActionConst.AttackWarm) {
 						this._currFrame_++;
 					}
 					this._bodyRenderTime_ = egret.getTimer();

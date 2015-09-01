@@ -48,7 +48,7 @@ module engine {
 			}
 			this.checkAndSetDir(true);
 			this.changeMoveAction();
-			this._movePath_ = value;//this._movePath_.length = 1;
+			this._movePath_ = value;
 
 			this._loopMoveTime_ = egret.getTimer();
 			this._totalTime_ = 0;
@@ -154,10 +154,18 @@ module engine {
 		}
 
 		private setMoveSpeed() {
-			if (this.dir == DirConst.TOP || this.dir == DirConst.BOTTOM) {
-				this._speed_ = this.runSpeed / 2;
-			} else {
-				this._speed_ = this.runSpeed;
+			if (this.action == ActionConst.WALK) {
+				if (this.dir == DirConst.TOP || this.dir == DirConst.BOTTOM) {
+					this._speed_ = this.walkSpeed / 2;
+				} else {
+					this._speed_ = this.walkSpeed;
+				}
+			} else if (this.action == ActionConst.RUN) {
+				if (this.dir == DirConst.TOP || this.dir == DirConst.BOTTOM) {
+					this._speed_ = this.runSpeed / 2;
+				} else {
+					this._speed_ = this.runSpeed;
+				}
 			}
 		}
 

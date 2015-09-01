@@ -1,7 +1,7 @@
 class Main extends egret.DisplayObjectContainer {
 
     private scene:GameScene;
-    private all_avatar:Array<string> = ["100000001","100000002","100000003","100000004"];
+    private all_avatar:Array<string> = ["wcx001","wco001"];
     private dir_flags:Array<number> = [1, -1];
     private robot_list:Array<engine.Char> = [];
     private robot_index:number = 0;
@@ -53,7 +53,7 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.x = 2500;
         this.scene.mainChar.y = 1300;
         this.scene.changeScene("10321");
-        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "npc054");
+        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "wco001");
         this.main_avatar_index = 1;
 
         for (var i:number=0; i<0; i++) {
@@ -91,9 +91,11 @@ class Main extends egret.DisplayObjectContainer {
     }
     
     private createHUD() {
-        this.createButton(this.tapFunc, "变身", 400, 0);
-        var alone: engine.WealthQueueAlone;
-        var group: engine.WealthQueueGroup;
+        this.createButton(this.tapFunc, "变身", 210, 0);
+        this.createButton(this.attackFunc, "攻击", 320, 0);
+        this.createButton(this.skillFunc, "施法", 430, 0);
+        this.createButton(this.hitFunc, "受击", 540, 0);
+        this.createButton(this.deathFunc, "死亡", 650, 0);
     }
 
     private createButton(handler:Function, label:string, x:number, y:number) {
@@ -114,6 +116,22 @@ class Main extends egret.DisplayObjectContainer {
             this.main_avatar_index = 0;
         }
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[this.main_avatar_index]);
+    }
+
+    private attackFunc() {
+        this.scene.mainChar.play(engine.ActionConst.ATTACK, engine.AvatarRenderTypes.PLAY_NEXT_RENDER);
+    }
+
+    private skillFunc() {
+        this.scene.mainChar.play(engine.ActionConst.SKILL, engine.AvatarRenderTypes.PLAY_NEXT_RENDER);
+    }
+    
+    private hitFunc() {
+        this.scene.mainChar.play(engine.ActionConst.HIT, engine.AvatarRenderTypes.PLAY_NEXT_RENDER);
+    }
+    
+    private deathFunc() {
+        this.scene.mainChar.play(engine.ActionConst.DEATH, engine.AvatarRenderTypes.PLAY_NEXT_RENDER);
     }
 
 }
