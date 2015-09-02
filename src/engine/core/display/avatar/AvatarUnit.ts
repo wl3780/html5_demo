@@ -9,11 +9,17 @@ module engine {
 		public isDisposed:boolean;
 		public mainActionData:AvatarActionData;
 
+		public hitFrameFunc:Function;
+		public skillFrameFunc:Function;
+		public renderFunc:Function;
+
 		protected _actNow_:string;
 		protected _actNext_:string;
 		protected _currFrame_:number;
 		protected _currDir_:number;
+
 		private _bodyRenderTime_:number = 0;
+		private _effectRecnderTime_:number = 0;
 
 		private bodyPartHash:Map<string, AvatarActionData>;
 
@@ -106,8 +112,11 @@ module engine {
 		}
 
 		public onBodyRender(renderType:number=AvatarRenderTypes.NORMAL_RENDER) {
+            var owner:IAvatar = AvatarUnitDisplay.takeUnitDisplay(this.oid);
+            if (owner == null) {
+                return;
+            }
 			if (this.mainActionData && this.mainActionData.isReady) {
-				var owner:IAvatar = AvatarUnitDisplay.takeUnitDisplay(this.oid);
 				if (this._currFrame_ >= this.mainActionData.totalFrames) {
 					if (egret.getTimer() - this._bodyRenderTime_ < this.mainActionData.currInterval) {
 						return;
@@ -148,8 +157,17 @@ module engine {
 							}
 						}
 					});
+                    if (this.renderFunc) {
+                        this.renderFunc.apply(owner, null);
+                    }
 				}
 				if (passTime - durTime >= 0 || renderType == AvatarRenderTypes.PLAY_NEXT_RENDER) {
+					if (this.skillFrameFunc && this._currFrame_ == this.mainActionData.skillFrame && (this._actNow_ == ActionConst.ATTACK || this._actNow_ == ActionConst.SKILL)) {
+						this.skillFrameFunc.apply(owner, null);
+					}
+					if (this.hitFrameFunc && this._currFrame_ == this.mainActionData.hitFrame) {
+						this.hitFrameFunc.apply(owner, null);
+					}
     				// 调试代码
                     console.log(this._actNow_+":"+this._currFrame_+"--"+durTime);
 					if (this._actNow_ != ActionConst.AttackWarm) {
@@ -164,6 +182,10 @@ module engine {
 
 		}
 
+		public get action():string {
+			return this._actNow_;
+		}
+
 		public get dir():number {
 			return this._currDir_;
 		}
@@ -174,8 +196,8 @@ module engine {
 			}
 		}
 
-		public get action():string {
-			return this._actNow_;
+		public get frame():number {
+			return this._currFrame_;
 		}
 
 		public recover() {

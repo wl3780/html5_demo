@@ -13,7 +13,6 @@ module engine {
         constructor() {
             super();
             this._id_ = Engine.getSoleId();
-            this._className_ = egret.getQualifiedClassName(this);
             DisplayObjectPort.addTarget(this);
         }
 
@@ -53,15 +52,14 @@ module engine {
         }
 
         public get className():string {
+            if (this._className_ == null) {
+                this._className_ = egret.getQualifiedClassName(this);
+            }
             return this._className_;
         }
 
         public get isDisposed():boolean {
             return this._isDisposed_;
-        }
-
-        public onRender():void {
-
         }
 
         public dispose():void {
@@ -77,7 +75,7 @@ module engine {
         }
 
         public toString():string {
-            return "[" + this._className_ + Engine.SIGN + this._id_ + "]";
+            return "[" + this.className + Engine.SIGN + this.id + "]";
         }
 
     }

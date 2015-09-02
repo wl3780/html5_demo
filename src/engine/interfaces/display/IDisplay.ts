@@ -14,7 +14,5 @@ module engine {
         name:string;
 
         isDisposed:boolean;
-
-        onRender():void;
     }
 }

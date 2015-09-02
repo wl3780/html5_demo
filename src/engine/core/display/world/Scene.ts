@@ -142,7 +142,8 @@ module engine {
                 EngineGlobal.stageRect.y = EngineGlobal.stagePoint.y;
                 EngineGlobal.stageRect.width = Engine.stage.stageWidth;
                 EngineGlobal.stageRect.height = Engine.stage.stageHeight;
-                
+
+                this.mainChar.loop();
                 this.mainChar.loopMove();
                 this.sceneMoveTo(this.mainChar.x, this.mainChar.y);
 
@@ -204,8 +205,13 @@ module engine {
             var idx:number = this.middleLayer.numChildren - 1;
             while (idx >= 0) {
                 display = this.middleLayer.getChildAt(idx);
-                if (display != this.mainChar && display.loopMove != undefined) {
-                    (<IInteractiveObject>display).loopMove();
+                if (display != this.mainChar) {
+                    if (display.loop != undefined) {
+                        (<IInteractiveObject>display).loop();
+                    }
+                    if (display.loopMove != undefined) {
+                        (<IInteractiveObject>display).loopMove();
+                    }
                 }
                 idx--;
             }

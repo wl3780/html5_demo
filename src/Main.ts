@@ -2,6 +2,7 @@ class Main extends egret.DisplayObjectContainer {
 
     private scene:GameScene;
     private all_avatar:Array<string> = ["wcx001","wco001"];
+    private all_sex:Array<number> = [1,2];
     private dir_flags:Array<number> = [1, -1];
     private robot_list:Array<engine.Char> = [];
     private robot_index:number = 0;
@@ -48,20 +49,23 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private createGameScene() {
+        this.main_avatar_index = 0;
         this.scene = new GameScene();
         this.scene.setup(this);
         this.scene.mainChar.x = 2500;
         this.scene.mainChar.y = 1300;
         this.scene.changeScene("10321");
-        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, "wco001");
-        this.main_avatar_index = 1;
+        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[this.main_avatar_index]);
+        this.scene.mainChar.sex = this.all_sex[this.main_avatar_index];
+        this.scene.mainChar.showShadow();
 
         for (var i:number=0; i<0; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;
             char.y = this.scene.mainChar.y + Math.random() * 300 >> 0;
-            char.openShadow = true;
+            char.showShadow();
+            char.sex = this.all_sex[idx];
             char.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[idx]);
             this.scene.addItem(char, engine.SceneConst.MIDDLE_LAYER);
             this.robot_list.push(char);

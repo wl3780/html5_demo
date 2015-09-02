@@ -50,17 +50,17 @@ module engine {
 				EngineGlobal.shadowAvatarGroupMale = actGroup;
 				EngineGlobal.shadowAvatarDataMale = actData;
 			}
-			if (avatarId == EngineGlobal.FAMALE_SHADOW) {
-				EngineGlobal.shadowAvatarGroupFamale = actGroup;
-				EngineGlobal.shadowAvatarDataFamale = actData;
+			if (avatarId == EngineGlobal.FEMALE_SHADOW) {
+				EngineGlobal.shadowAvatarGroupFemale = actGroup;
+				EngineGlobal.shadowAvatarDataFemale = actData;
 			}
 			if (avatarId == EngineGlobal.MALE_BASE) {
 				EngineGlobal.baseAvatarGroupMale = actGroup;
 				EngineGlobal.baseAvatarDataMale = actData;
 			}
-			if (avatarId == EngineGlobal.FAMALE_BASE) {
-				EngineGlobal.baseAvatarGroupFamale = actGroup;
-				EngineGlobal.baseAvatarDataFamale = actData;
+			if (avatarId == EngineGlobal.FEMALE_BASE) {
+				EngineGlobal.baseAvatarGroupFemale = actGroup;
+				EngineGlobal.baseAvatarDataFemale = actData;
 			}
 			if (actGroup.isLoaded == false) {
 				if (actGroup.isPended == false) {

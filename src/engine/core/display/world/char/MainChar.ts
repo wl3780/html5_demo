@@ -3,7 +3,6 @@ module engine {
 
 		public constructor() {
 			super();
-			this.openShadow = true;
 		}
 
 	}

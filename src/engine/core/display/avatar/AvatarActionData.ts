@@ -145,6 +145,20 @@ module engine {
 			this._currFrame_ = value;
 		}
 
+		public get skillFrame():number {
+			if (this._actionFormat_) {
+				return this._actionFormat_.skillFrame;
+			}
+			return 0;
+		}
+
+		public get hitFrame():number {
+			if (this._actionFormat_) {
+				return this._actionFormat_.hitFrame;
+			}
+			return 0;
+		}
+
 		public recover() {
 			if (this.isDisposed) {
 				return;

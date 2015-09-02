@@ -1,7 +1,7 @@
 module engine {
 	export class NoderSprite extends DisplaySprite implements INoderDisplay {
 
-		public _tid:string;
+		protected _tid:string;
 
 		private _node:NodeRect;
 		private _tree:NodeTree;
@@ -21,7 +21,7 @@ module engine {
 		}
 
 		public _setX(value:number) {
-			if (this.y != value) {
+			if (this.x != value) {
 				super._setX(value);
 				this.updata(value, this.y, this.nodeKey);
 			}

@@ -1,10 +1,14 @@
 module engine {
 	export class Char extends AvatarUnitDisplay implements IChar {
 
+		private static shadowMale:AvatarUnit;
+		private static shadowFemale:AvatarUnit;
+
 		public runSpeed:number = 230;
 		public walkSpeed:number = 100;
 
 		public type:string;
+		public sex:number = SexTypes.Male;
 		public layer:string;
 		public char_id:string;
 		public scene_id:string;
@@ -16,6 +20,9 @@ module engine {
 		public isRuning:boolean = false;
 
 		public moveEndFunc:Function;
+
+		protected headShape:any;
+		protected shadowShape:CharShadow;
 
 		private _speed_:number;
 		private _movePath_:Array<egret.Point>;
@@ -62,6 +69,17 @@ module engine {
             }
 		}
 
+		public loop() {
+			if (this.headShape) {
+				this.headShape.x = this.x;
+				this.headShape.y = this.y;
+			}
+			if (this.shadowShape) {
+				this.shadowShape.x = this.x;
+				this.shadowShape.y = this.y;
+			}
+		}
+
 		public loopMove() {
 			this._totalTime_ += egret.getTimer() - this._loopMoveTime_;
 			if (this._tarPoint_ && this._totalTime_ > 0) {
@@ -76,6 +94,9 @@ module engine {
 
 		public play(action:string, renderType:number=AvatarRenderTypes.NORMAL_RENDER, playEndFunc:Function=null, stopFrame:number=-1) {
 			super.play(action, renderType, playEndFunc, stopFrame);
+			if (this.shadowShape) {
+				this.shadowShape.play(action, renderType, null, stopFrame);
+			}
 			this.setMoveSpeed();
 		}
 
@@ -93,8 +114,40 @@ module engine {
 			Scene.isDepthChange = true;
 		}
 
+		public showShadow() {
+			if (this.shadowShape == null) {
+				this.shadowShape = new CharShadow();
+			}
+			if (Char.shadowMale == null) {
+				Char.shadowMale = new AvatarUnit();
+				Char.shadowMale.init();
+				AvatarRenderManager.getInstance().removeUnit(Char.shadowMale.id);
+			}
+			if (Char.shadowFemale == null) {
+				Char.shadowFemale = new AvatarUnit();
+				Char.shadowFemale.init();
+				AvatarRenderManager.getInstance().removeUnit(Char.shadowFemale.id);
+			}
+			var idNum:string;
+			if (this.sex == SexTypes.Male) {
+				this.shadowShape.unit = Char.shadowMale;
+				idNum = EngineGlobal.SHADOW_MALE;
+			} else if (this.sex == SexTypes.Female) {
+				this.shadowShape.unit = Char.shadowFemale;
+				idNum = EngineGlobal.SHADOW_FEMALE;
+			}
+			this.shadowShape.loadAvatarPart(AvatarTypes.BODY_TYPE, idNum);
+		}
+
 		public dispose() {
 			super.dispose();
+		}
+
+		protected setup() {
+			super.setup();
+			this._unit_.renderFunc = this._renderHandler_;
+			this._unit_.skillFrameFunc = this._skillFrameHandler_;
+			this._unit_.hitFrameFunc = this._hitFrameHandler_;
 		}
 
 		protected _CharMoveEnd_() {
@@ -134,6 +187,20 @@ module engine {
 					this._CharMoveEnd_();
 				}
 			}
+		}
+
+		protected _renderHandler_() {
+			if (this.shadowShape) {
+				this.shadowShape.display(this._unit_.action, this._unit_.dir, this._unit_.frame);
+			}
+		}
+
+		protected _skillFrameHandler_() {
+
+		}
+
+		protected _hitFrameHandler_() {
+
 		}
 
 		private changeMoveAction() {
