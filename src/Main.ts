@@ -58,8 +58,11 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[this.main_avatar_index]);
         this.scene.mainChar.sex = this.all_sex[this.main_avatar_index];
         this.scene.mainChar.showShadow();
+        this.scene.mainChar.charName = "西门大官人";
+        this.scene.mainChar.setBlood(100, 500);
+        this.scene.mainChar.setNei(200, 800);
 
-        for (var i:number=0; i<0; i++) {
+        for (var i:number=0; i<10; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;
@@ -67,6 +70,7 @@ class Main extends egret.DisplayObjectContainer {
             char.showShadow();
             char.sex = this.all_sex[idx];
             char.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[idx]);
+            char.charName = "Robot" + i;
             this.scene.addItem(char, engine.SceneConst.MIDDLE_LAYER);
             this.robot_list.push(char);
         }

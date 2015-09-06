@@ -18,10 +18,11 @@ module engine {
 		public enabled:boolean = false;
 		public isDisposed:boolean = false;
 		public isRuning:boolean = false;
+        public isDeath:boolean = false;
 
 		public moveEndFunc:Function;
 
-		protected headShape:any;
+		protected headShape:CharHead;
 		protected shadowShape:CharShadow;
 
 		private _speed_:number;
@@ -34,6 +35,9 @@ module engine {
 			super();
 			this.point = Engine.getPoint();
 			this.tilePoint = Engine.getPoint();
+
+			this.headShape = CharHead.createCharHead();
+			this.headShape.oid = this.id;
 		}
 
 		public moveTo(x:number, y:number) {
@@ -71,8 +75,8 @@ module engine {
 
 		public loop() {
 			if (this.headShape) {
-				this.headShape.x = this.x;
-				this.headShape.y = this.y;
+				this.headShape.x = this.x >> 0;
+				this.headShape.y = this.y - 100 >> 0;
 			}
 			if (this.shadowShape) {
 				this.shadowShape.x = this.x;
@@ -137,6 +141,37 @@ module engine {
 				idNum = EngineGlobal.SHADOW_FEMALE;
 			}
 			this.shadowShape.loadAvatarPart(AvatarTypes.BODY_TYPE, idNum);
+		}
+
+		public set charName(value:string) {
+			if (value) {
+				this.headShape.nameVisible = true;
+				this.headShape.charName = value;
+				Scene.scene.topLayer.addChild(this.headShape);
+			} else {
+				this.headShape.nameVisible = false;
+				if (this.headShape.parent) {
+					this.headShape.parent.removeChild(this.headShape);
+				}
+			}
+		}
+
+		public setBlood(curr:number, max:number) {
+    		if (this.isDeath) {
+                this.headShape.bloodKitVisible = false;    
+    		} else {
+                this.headShape.bloodKitVisible = true;
+    		}
+			this.headShape.setBloodValue(curr, max);
+		}
+
+		public setNei(curr:number, max:number) {
+            if(this.isDeath) {
+                this.headShape.neiKitVisible = false;
+            } else {
+                this.headShape.neiKitVisible = true;
+            }
+			this.headShape.setNeiValue(curr, max);
 		}
 
 		public dispose() {

@@ -57,6 +57,14 @@ module engine {
             }
             return this._className_;
         }
+        
+        public _setX(value:number) {
+            super._setX(value >> 0);
+        }
+        
+        public _setY(value:number) {
+            super._setY(value >> 0);
+        }
 
         public get isDisposed():boolean {
             return this._isDisposed_;

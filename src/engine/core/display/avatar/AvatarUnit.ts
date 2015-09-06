@@ -168,8 +168,7 @@ module engine {
 					if (this.hitFrameFunc && this._currFrame_ == this.mainActionData.hitFrame) {
 						this.hitFrameFunc.apply(owner, null);
 					}
-    				// 调试代码
-                    console.log(this._actNow_+":"+this._currFrame_+"--"+durTime);
+                    //console.log(this._actNow_+":"+this._currFrame_+"--"+durTime);    // 调试代码
 					if (this._actNow_ != ActionConst.AttackWarm) {
 						this._currFrame_++;
 					}

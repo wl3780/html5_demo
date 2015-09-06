@@ -1,38 +1,30 @@
 module engine {
     export class CharHead extends DisplaySprite {
 
-        public static intanceHash:Array<CharHead> = [];
-        public static cacheBmdHash:Map<>;
-        public static charHeadQueue:Array<any> = [];
+        public static cacheBmdHash:Map<string, egret.Texture> = new Map<string, egret.Texture>();
+        public static charHeadQueue:Array<CharHead> = [];
 
-        public static _blood_:BloodKit;
-        public static _nei_:BloodKit;
-        public static _nameText_:egret.TextField;
-        public static _professionNameText_:egret.TextField;
-        public static _unionNameText_:egret.TextField;
-        public static _bloodText_:egret.TextField;
-        public static _sprite_:egret.Sprite;
+        public static _blood_:BloodKit = new BloodKit();
+        public static _nei_:BloodKit = new BloodKit(0xFFFF00);
+        public static _nameText_:egret.TextField = new egret.TextField();
+        public static _bloodText_:egret.TextField = new egret.TextField();
+        public static _sprite_:egret.Sprite = new egret.Sprite();
 
-        public static _renderNum_:number;
-        public static _renderIndex_:number;
-
-        public char_id:string;
         public cacheMode:boolean = false;
 
         private bmd:egret.RenderTexture;
         private bmp:egret.Bitmap;
 
         private renderInterval:number = 0;
-        private renderIndex:number = 0;
         private renderTime:number = 0;
-        private tmpTime:number = 0;
+
         private _name_:string;
-        private _nameColor_:number = 0;
+        private _nameColor_:number = 0xFFFFFF;
         private _nameVisible_:boolean = false;
         private _bloodKitVisible_:boolean = false;
+        private _neiKitVisible_:boolean = false;
         private _currBlood_:number = 0;
         private _maxBlood_:number = 0;
-        private _neiKitVisible_:boolean = false;
         private _currNei_:number = 0;
         private _maxNei_:number = 0;
 
@@ -64,7 +56,7 @@ module engine {
             return result;
         }
 
-        public setBloodValue(curr:number,max:number) {
+        public setBloodValue(curr:number, max:number) {
             this._currBlood_ = curr;
             this._maxBlood_ = max;
             this.doit();
@@ -76,7 +68,7 @@ module engine {
             }
         }
 
-        public setNeiValue(curr:number,max:number) {
+        public setNeiValue(curr:number, max:number) {
             this._currNei_ = curr;
             this._maxNei_ = max;
             this.doit();
@@ -100,7 +92,7 @@ module engine {
                 this.doit();
             }
         }
-        public set name(value:string) {
+        public set charName(value:string) {
             if (this._name_ != value) {
                 this._name_ = value;
                 this.doit();
@@ -108,45 +100,31 @@ module engine {
         }
 
         private doit() {
-            this.tmpTime = egret.getTimer();
-            com.coder.core.controls.elisor.HeartbeatFactory.getInstance().addFrameOrder(flash.bind(this.onEnterFrameFunc,this));
+            this.addEventListener(egret.Event.ENTER_FRAME, this.onEnterFrameFunc, this);
         }
 
-        protected onEnterFrameFunc()
-        {
-            CharHead._renderIndex_ = CharHead._renderIndex_ + 1;
-            if(CharHead._renderIndex_ > 1)
-            {
-                CharHead._renderIndex_ = 0;
-            }
-            var char:Char = <Char>flash.As3As(avatar.AvatarUnitDisplay.takeUnitDisplay(this.oid),Char);
-            if(!char || char.char_id != this.char_id)
-            {
-                com.coder.core.controls.elisor.HeartbeatFactory.getInstance().removeFrameOrder(flash.bind(this.onEnterFrameFunc,this));
-                return ;
-            }
-            if(this.renderIndex == CharHead._renderIndex_ || egret.getTimer() - this.tmpTime > this.renderInterval || com.coder.utils.FPSUtils.fps > 30)
-            {
-                this.tmpTime = egret.getTimer();
-                com.coder.core.controls.elisor.HeartbeatFactory.getInstance().removeFrameOrder(flash.bind(this.onEnterFrameFunc,this));
-                if(char)
-                {
-                    this.onRender();
-                }
+        private onEnterFrameFunc() {
+            if (egret.getTimer() - this.renderTime > this.renderInterval) {
+                this.renderTime = egret.getTimer();
+                this.removeEventListener(egret.Event.ENTER_FRAME, this.onEnterFrameFunc, this);
+                this.onRender();
             }
         }
 
         private init() {
+            CharHead._nameText_.size = 14;
+            CharHead._bloodText_.size = 12;
             this.touchEnabled = this.touchChildren = false;
             //CharHead._nameText_.filters = EngineGlobal.textFilter;
             //CharHead._unionNameText_.filters = EngineGlobal.textFilter;
             //CharHead._professionNameText_.filters = EngineGlobal.textFilter;
             this.renderInterval = (Math.random() * 700 >> 0) + 100;
-            this.renderIndex = (Math.random() * 2) >> 0;
+            this.bmp = new egret.Bitmap();
+            this.addChild(this.bmp);
         }
 
         public onRender() {
-            if (this._isDisposed) {
+            if (this.isDisposed) {
                 return;
             }
 
@@ -177,7 +155,8 @@ module engine {
             if (this._name_ && this._nameVisible_) {
                 _txtName.textColor = this._nameColor_;
                 _txtName.text = this._name_;
-                _txtName.width = _txtName.textWidth + 4;
+                //_txtName.width = _txtName.textWidth + 4;
+                _txtName.width = 14 * 7;    // egret.TextField有bug，设置text后textWidth属性没及时更新
                 _txtName.x = -(_txtName.width / 2);
                 _txtName.height = _txtName.textHeight + 4;
                 _txtName.y = _txtY;
@@ -208,6 +187,7 @@ module engine {
                 this.bmd = new egret.RenderTexture();
                 this.bmd.drawToTexture(_this);
                 this.bmp.texture = this.bmd;
+                this.bmp.y = -this.bmp.height;
             } else {
                 this.bmp.texture = null;
             }
@@ -219,11 +199,9 @@ module engine {
         }
 
         public recover() {
-            if (this.bmd) {
-                this.bmd.dispose();
-                this.bmd = null;
+            if (this.isDisposed) {
+                return;
             }
-            this.graphics.clear();
 
             this._bloodKitVisible_ = false;
             this._currBlood_ = 0;
@@ -231,13 +209,16 @@ module engine {
             this._name_ = "";
             this._nameVisible_ = false;
             this._nameColor_ = 0xFFFFFF;
-            this._professionName_ = "";
-            this._professionNameColor_ = 0xFFFFFF;
-            this._professionNameVisible_ = false;
-            this._nameVisible_ = false;
+
+            CharHead.charHeadQueue.push(this);
         }
 
         public dispose() {
+            if (this.bmd) {
+                this.bmd.dispose();
+                this.bmd = null;
+            }
+            this.graphics.clear();
             super.dispose();
         }
 
