@@ -5,7 +5,7 @@ module engine {
 
 		public static _instance_:AvatarRenderManager;
 
-		private intervalue:number = 0;
+		private interValue:number = 0;
 		private renderIndex:number = 0;
 
 		private unitQueue:Array<AvatarUnit> = [];
@@ -43,7 +43,7 @@ module engine {
 			}
 		}
 
-		private timerFrameFunc(event:egret.TimerEvent) {
+		private timerFrameFunc(evt:egret.TimerEvent) {
 			this.heartBeatHandler();
 		}
 
@@ -53,10 +53,10 @@ module engine {
 			}
 
 			var needTime:number = 30;
-			if(egret.getTimer() - this.intervalue < needTime) {
+			if(egret.getTimer() - this.interValue < needTime) {
 				return ;
 			}
-			this.intervalue = egret.getTimer();
+			this.interValue = egret.getTimer();
 
 			this.renderIndex++;
 			if(this.renderIndex >= AvatarRenderManager.renderNum) {
@@ -69,7 +69,7 @@ module engine {
 			while(queueIndex < this.unitQueue.length) {
 				avatarUnit = this.unitQueue[queueIndex];
 				avatarDisplay = AvatarUnitDisplay.takeUnitDisplay(avatarUnit.oid);
-				if ((avatarUnit.renderindex == this.renderIndex) || (avatarDisplay == Scene.scene.mainChar)) {
+				if ((avatarUnit.renderIndex == this.renderIndex) || (avatarDisplay == Scene.scene.mainChar)) {
 					avatarUnit.onBodyRender();
 					avatarUnit.onEffectRender();
 				}

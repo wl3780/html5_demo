@@ -3,7 +3,13 @@ module engine {
 
 		public static MAIN_CHAR:string = "hero";
 
-		public static SHADOW_TYPE:string;
+		public static CHAR:string = "char";
+
+		public static MONSTER:string = "monster_normal";
+		public static SUMMON_MONSTER:string = "monster_summon";
+
+		public static NPC:string = "npc_normal";
+		public static SUMMON_NPC:string = "npc_summon";
 	}
 }
 

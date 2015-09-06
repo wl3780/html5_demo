@@ -43,7 +43,7 @@ class MainCharWalkManager {
             return [p_end];
         }
         var ret:Array<egret.Point>;
-        if (this.checkPointType(p_start, p_end)) {// && (tp_start.x == tp_end.x || tp_start.y == tp_end.y)) {
+        if (this.checkPointType(p_start, p_end) && (tp_start.x == tp_end.x || tp_start.y == tp_end.y)) {
             ret = [p_end];
         } else {
             ret = this.astar.getPath(engine.TileGroup.getInstance().hash, tp_start.x, tp_start.y, tp_end.x, tp_end.y, true, breakStep);

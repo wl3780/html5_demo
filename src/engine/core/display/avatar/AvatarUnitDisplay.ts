@@ -1,11 +1,6 @@
 module engine {
 	export class AvatarUnitDisplay extends NoderSprite implements IAvatar {
 
-		public static depthBaseHash:Array<Array<string>> = [["wgid", "mid", "wid"], ["wgid", "wid", "mid"], ["wid", "wgid", "mid"], ["wid", "mid", "wgid"], ["wid", "mid", "wgid"], ["mid", "wgid", "wid"], ["wgid", "mid", "wid"], ["wgid", "mid", "wid"]];
-		public static depthAttackHash:Array<Array<string>> = [["wgid", "mid", "wid"], ["wgid", "wid", "mid"], ["wid", "mid", "wgid"], ["wid", "mid", "wgid"], ["wid", "mid", "wgid"], ["mid", "wgid", "wid"], ["wgid", "mid", "wid"], ["wgid", "mid", "wid"]];
-		public static depthDeathHash:Array<string> = ["wid", "mid", "wgid"];
-		public static charIntersectsRect:egret.Rectangle = new egret.Rectangle();
-
 		public static _instanceHash_:Map<string, IAvatar> = new Map<string, IAvatar>();
 
 		public mid:string;

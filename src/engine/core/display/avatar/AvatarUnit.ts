@@ -5,8 +5,9 @@ module engine {
 		private static _recoverQueue_:Array<AvatarUnit> = [];
 		private static _recoverIndex_:number = 50;
 
-		public renderindex:number;
+		public renderIndex:number;
 		public isDisposed:boolean;
+		public priorLoadQueue:Array<string>;
 		public mainActionData:AvatarActionData;
 
 		public hitFrameFunc:Function;
@@ -19,13 +20,14 @@ module engine {
 		protected _currDir_:number;
 
 		private _bodyRenderTime_:number = 0;
-		private _effectRecnderTime_:number = 0;
+		private _effectRenderTime_:number = 0;
 
 		private bodyPartHash:Map<string, AvatarActionData>;
 
 		public constructor() {
 			super();
-			this.renderindex = Math.random() * AvatarRenderManager.renderNum >> 0;
+			this.priorLoadQueue = [ActionConst.STAND];
+			this.renderIndex = Math.random() * AvatarRenderManager.renderNum >> 0;
 			this.bodyPartHash = new Map<string, AvatarActionData>();
 			AvatarUnit._instanceHash_.set(this.id, this);
 			AvatarRenderManager.getInstance().addUnit(this);

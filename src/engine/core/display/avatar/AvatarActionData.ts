@@ -53,7 +53,27 @@ module engine {
 			this.isReady = true;
 			this._actionFormat_ = this._actionGroup_.takeAction(this._currAction_);
 			this._totalFrames_ = this._actionFormat_.totalFrames;
+
 			this.loadActSWF(this._currAction_, this._currDir_);
+			var unit:AvatarUnit = AvatarUnit.takeAvatarUnit(this.oid);
+			if (unit && unit.priorLoadQueue) {
+				var queue:Array<string> = unit.priorLoadQueue.slice(0);
+				if (queue.indexOf(this._currAction_) == -1) {
+					queue.unshift(this._currAction_);
+				}
+				var avatar:IAvatar = AvatarUnitDisplay.takeUnitDisplay(unit.oid);
+				if (avatar && (avatar.type == CharTypes.MAIN_CHAR || avatar.type == CharTypes.CHAR)) {
+					queue.forEach(act => {
+						for (var i=0; i<8; i++) {
+							this.loadActSWF(act, i);
+						}
+					});
+				} else {
+					queue.forEach(act => {
+						this.loadActSWF(act, this._currDir_);
+					});
+				}
+			}
 		}
 
 		public get currInterval():number {
@@ -181,13 +201,10 @@ module engine {
 				return;
 			}
 			if (this._actionGroup_ && this._actionGroup_.isLoaded) {
-				this._actionFormat_ = this._actionGroup_.takeAction(act);
-				if (this._actionFormat_) {
-					if (act == ActionConst.AttackWarm) {
-						act = ActionConst.ATTACK;
-					}
-					AvatarRequestManager.getInstance().loadAvatarSWF(this.idName, act, dir);
+				if (act == ActionConst.AttackWarm) {
+					act = ActionConst.ATTACK;
 				}
+				AvatarRequestManager.getInstance().loadAvatarSWF(this.idName, act, dir);
 			}
 		}
 

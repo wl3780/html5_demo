@@ -94,7 +94,7 @@ class Main extends egret.DisplayObjectContainer {
             this.robot_index = 0;
         }
         var char:engine.Char = this.robot_list[this.robot_index];
-        if (char.isRuning == false) {
+        if (char.isRunning == false) {
             var pt_end:egret.Point = engine.Engine.getPoint(this.scene.mainChar.x, this.scene.mainChar.y);
             pt_end.x += Math.random() * 500 * this.dir_flags[Math.random() * 2 >> 0] >> 0;
             pt_end.y += Math.random() * 300 * this.dir_flags[Math.random() * 2 >> 0] >> 0;
