@@ -23,11 +23,13 @@ module engine {
 			this.cacheAsBitmap = true;
 		}
 
+		/** 表 */
 		public set overBitmapData(value:egret.Texture) {
 			this._overBitmapData = value;
 			this.onRender();
 		}
 
+		/** 底 */
 		public set bitmapData(value:egret.Texture) {
 			this._bitmapData = value;
 			this.onRender();
@@ -55,7 +57,7 @@ module engine {
 				}
 			} else {
 				this.graphics.beginFill(this._color);
-				this.graphics.drawRect(0, 2, this.width, this.height);
+				this.graphics.drawRect(0, 0, this.width*this.percent >> 0, this.height);
 				this.graphics.endFill();
 			}
 			if (this._overBitmapData) {
@@ -67,9 +69,8 @@ module engine {
 				}
 				this._overBitmap.width = this._overBitmapData.textureWidth * this.percent;
 			} else {
-				this.graphics.lineStyle(0.1, 0);
-				this.graphics.drawRect(0, 2, (this.width * this.percent), this.height);
-				this.graphics.endFill();
+				this.graphics.lineStyle(0.6, 0);
+				this.graphics.drawRect(0, 0, this.width, this.height);
 			}
 		}
 

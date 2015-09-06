@@ -1,8 +1,12 @@
 class Main extends egret.DisplayObjectContainer {
 
     private scene:GameScene;
-    private all_avatar:Array<string> = ["wcx001","wco001"];
-    private all_sex:Array<number> = [1,2];
+
+    private all_avatar:Array<string> = ["wcx001","wcx004","wco005","wco001"];
+    private all_sex:Array<number> = [1,1,2,2];
+    private all_weapon:Array<string> = ["wwx007"];
+    private all_wing:Array<string> = ["cb12"];
+
     private dir_flags:Array<number> = [1, -1];
     private robot_list:Array<engine.Char> = [];
     private robot_index:number = 0;
@@ -21,7 +25,7 @@ class Main extends egret.DisplayObjectContainer {
         engine.Engine.setup(this, "");
 
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE,this.onConfigComplete,this);
-        RES.loadConfig("resource/resource.json","resource/");
+        RES.loadConfig("resource/resource.json", "resource/");
     }
 
     private onConfigComplete(event:RES.ResourceEvent) {
@@ -49,7 +53,7 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private createGameScene() {
-        this.main_avatar_index = 0;
+        this.main_avatar_index = 1;
         this.scene = new GameScene();
         this.scene.setup(this);
         this.scene.mainChar.x = 2500;
@@ -57,12 +61,14 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.changeScene("10321");
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[this.main_avatar_index]);
         this.scene.mainChar.sex = this.all_sex[this.main_avatar_index];
+        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.WEAPON_TYPE, this.all_weapon[0]);
+        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.WING_TYPE, this.all_wing[0]);
         this.scene.mainChar.showShadow();
         this.scene.mainChar.charName = "西门大官人";
         this.scene.mainChar.setBlood(100, 500);
         this.scene.mainChar.setNei(200, 800);
 
-        for (var i:number=0; i<10; i++) {
+        for (var i:number=0; i<0; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;

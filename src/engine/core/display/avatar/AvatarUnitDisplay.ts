@@ -120,7 +120,6 @@ module engine {
 				}
                 this.setBitmapValue(bitmap, bitmapData, -tx, -ty);
                 if (bitmap.texture && !bitmap.parent) {
-                    this.addChild(bitmap);
                     this.updateBitmapDepth();
                 }
 			} else {
@@ -146,14 +145,12 @@ module engine {
 
 		}
 
-		public updateBitmapDepth() {
-		}
-
 		public get dir():number {
 			return this._unit_.dir;
 		}
 		public set dir(value:number) {
 			this._unit_.dir = value;
+			this.updateBitmapDepth();
 		}
 
 		public get action():string {
@@ -204,6 +201,22 @@ module engine {
 			this._unit_ = AvatarUnit.createAvatarUnit();
 			this._unit_.oid = this.id;
 			this._unit_.init();
+		}
+
+		protected updateBitmapDepth() {
+			var depthInfos:Array<string> = AvatarTypes.depthBaseHash[this.dir];
+			if (this.action == ActionConst.ATTACK || this.action == ActionConst.SKILL || this.action == ActionConst.AttackWarm) {
+				depthInfos = AvatarTypes.depthAttackHash[this.dir];
+			} else if (this.action == ActionConst.DEATH) {
+				depthInfos = AvatarTypes.depthDeathHash;
+			}
+			var bmp:egret.Bitmap;
+			depthInfos.forEach(act => {
+				bmp = this["bmd_"+act];
+				if (bmp) {
+					this.addChildAt(bmp, 0);
+				}
+			});
 		}
 
 		private setBitmapValue(bitmap:egret.Bitmap, bitmapData:egret.Texture, vx:number, vy:number) {

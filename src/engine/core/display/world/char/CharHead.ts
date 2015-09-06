@@ -155,8 +155,7 @@ module engine {
             if (this._name_ && this._nameVisible_) {
                 _txtName.textColor = this._nameColor_;
                 _txtName.text = this._name_;
-                //_txtName.width = _txtName.textWidth + 4;
-                _txtName.width = 14 * 7;    // egret.TextField有bug，设置text后textWidth属性没及时更新
+                //_txtName.width = _txtName.textWidth + 4;  // egret.TextField有bug，设置text后textWidth属性没及时更新
                 _txtName.x = -(_txtName.width / 2);
                 _txtName.height = _txtName.textHeight + 4;
                 _txtName.y = _txtY;
@@ -165,22 +164,22 @@ module engine {
             }
             if (this._bloodKitVisible_) {
                 _txtBlood.text = this._currBlood_ + "/" + this._maxBlood_;
-                _txtBlood.width = _txtBlood.textWidth + 4;
+                //_txtBlood.width = _txtBlood.textWidth + 4;
                 _txtBlood.x = -(_txtBlood.width / 2) + 1;
                 _txtBlood.height = _txtBlood.textHeight + 4;
                 _txtBlood.y = _txtY;
 
                 _blood.width = 46;
-                _blood.height = 5;
+                _blood.height = 4;
                 _blood.setValue(this._currBlood_, this._maxBlood_);
                 _blood.x = -(_blood.width / 2);
-                _blood.y = _txtBlood.y + 16 + 2;
+                _blood.y = _txtBlood.y + 16;
 
                 _nei.width = 46;
-                _nei.height = 5;
+                _nei.height = 4;
                 _nei.setValue(this._currNei_, this._maxNei_);
                 _nei.x = -(_nei.width / 2);
-                _nei.y = _blood.y + 4;
+                _nei.y = _blood.y + 6;
             }
 
             if (_this.width && _this.height) {
