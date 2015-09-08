@@ -11,14 +11,13 @@ module engine {
 		public random:number;
 		public isReady:boolean = false;
 		public isDisposed:Boolean = false;
-		public offsetX:number = 0;
-		public offsetY:number = 0;
 		public stopFrame:number = -1;
+		public replay:number = 0;
 
 		private _avatarDataFormatGroup_id_:string;
 		private _currAction_:string = ActionConst.STAND;
-		private _currDir_:number = 0;
-		private  _currInterval_:number = 0;
+		private _currDir_:number = DirConst.BOTTOM;
+		private _currInterval_:number = 0;
 		private _totalFrames_:number = 0;
 		private _currFrame_:number = 0;
 
@@ -53,8 +52,9 @@ module engine {
 			this.isReady = true;
 			this._actionFormat_ = this._actionGroup_.takeAction(this._currAction_);
 			this._totalFrames_ = this._actionFormat_.totalFrames;
+			this.replay = this._actionFormat_.replay;
 
-			this.loadActSWF(this._currAction_, this._currDir_);
+			this.loadActSWF(this._currAction_, this._currDir_);	// 优先加载当前动作
 			var unit:AvatarUnit = AvatarUnit.takeAvatarUnit(this.oid);
 			if (unit && unit.priorLoadQueue) {
 				var queue:Array<string> = unit.priorLoadQueue.slice(0);
@@ -91,12 +91,11 @@ module engine {
 		}
 
 		public getActionFormat(act:string):AvatarActionFormat {
+			var format:AvatarActionFormat = null;
 			if (this._actionGroup_) {
-				var format:AvatarActionFormat = this._actionGroup_.takeAction(act);
-				return format;
-			} else {
-				return null;
+				format = this._actionGroup_.takeAction(act);
 			}
+			return format;
 		}
 
 		public getBitmapData(dir:number, frame:number):egret.Texture {
@@ -122,7 +121,7 @@ module engine {
 					dir = 0;
 				}
 				if (this._actionFormat_.txs[dir] && frame < this._actionFormat_.txs[dir].length) {
-					return this._actionFormat_.txs[dir][frame] - this._actionFormat_.dirOffsetX[dir] + this.offsetX;
+					return this._actionFormat_.txs[dir][frame] - this._actionFormat_.dirOffsetX[dir];
 				}
 			}
 			return 0;
@@ -134,7 +133,7 @@ module engine {
 					dir = 0;
 				}
 				if (this._actionFormat_.tys[dir] && frame < this._actionFormat_.tys[dir].length) {
-					return this._actionFormat_.tys[dir][frame] - this._actionFormat_.dirOffsetY[dir] + this.offsetY;
+					return this._actionFormat_.tys[dir][frame] - this._actionFormat_.dirOffsetY[dir];
 				}
 			}
 			return 0;
@@ -149,6 +148,7 @@ module engine {
 			if (this._actionGroup_ && this._actionGroup_.isLoaded) {
 				this._actionFormat_ = this._actionGroup_.takeAction(value);
 				this._totalFrames_ = this._actionFormat_.totalFrames;
+				this.replay = this._actionFormat_.replay;
 			}
 			this._currAction_ = value;
 		}

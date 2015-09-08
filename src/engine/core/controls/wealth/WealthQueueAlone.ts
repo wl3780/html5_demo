@@ -52,11 +52,11 @@ module engine {
 			}
 		}
 
-		public addWealth(path:string, data:any = null, otherArgs:any = null, prio:number = -1):string {
+		public addWealth(path:string, data:any = null, prio:number = -1):string {
 			if (this._isDispose_) {
 				return null;
 			}
-			var wealth_id:string = this._wealthGroup_.addWealth(path, data, otherArgs, prio);
+			var wealth_id:string = this._wealthGroup_.addWealth(path, data, prio);
 			if (wealth_id && this.isSortOn) {
 				this._wealthGroup_.sortOn();
 			}

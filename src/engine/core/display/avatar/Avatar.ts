@@ -118,7 +118,7 @@ module engine {
                         this.id_wgid = avatarId;
                         break;
                 }
-                AvatarRequestManager.getInstance().loadAvatar(avatarType, avatarNum);
+                AvatarRequestManager.getInstance().loadAvatarFormat(avatarType, avatarNum);
             } else {
                 switch (avatarType) {
                     case AvatarTypes.BODY_TYPE:

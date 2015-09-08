@@ -83,53 +83,31 @@ module engine {
          */
         public static DEATH:string = "death";
         /**
-         * 群攻
-         */
-        public static QUNGONG:string = "qungong";
-        /**
          * 攻击
          */
         public static ATTACK:string = "attack";
-        /**
-         * 飞行
-         */
-        public static FLY:string = "fly";
         /**
          * 受击
          */
         public static HIT:string = "hit";
         /**
-         * 采集
-         */
-        public static COLLECTION:string = "caiji";
-        /**
-         * 打坐
-         */
-        public static MEDITATION:string = "dazuo";
-        /**
          * 技能
          */
         public static SKILL:string = "skill";
-        /**
-         * 跳跃
-         */
-        public static JUMP:string = "jump";
         /**
          * 攻击起手动作
          */
         public static AttackWarm:string = "attack_warm";
 
         public static LoopActions:Array<string> = [
-            ActionConst.AttackWarm,
             ActionConst.STAND,
+            ActionConst.WALK,
             ActionConst.RUN,
-            ActionConst.WALK
+            ActionConst.AttackWarm
         ];
 
         public static warmHash:any = {
-            attack:"attack_warm",
-            walk:"walk_warm",
-            run:"run_warm"
+            attack:"attack_warm"
         }
     }
 }

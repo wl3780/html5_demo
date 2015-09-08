@@ -28,11 +28,8 @@ module engine {
 		public dirOffsetX:Array<number>;
 		public dirOffsetY:Array<number>;
 
-		private actState:any;
-
 		public constructor() {
 			super();
-			this.actState = {};
 			AvatarActionFormat._instanceHash_.set(this.id, this);
 		}
 
@@ -55,10 +52,6 @@ module engine {
 
 		public static removeAvatarActionFormat(id:string) {
 			AvatarActionFormat._instanceHash_.delete(id);
-		}
-
-		public resetActReady() {
-			this.actState = {};
 		}
 
 		public init() {

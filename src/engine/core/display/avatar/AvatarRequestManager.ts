@@ -28,7 +28,7 @@ module engine {
 			return sheet;
 		}
 
-		public loadAvatar(unitId:string, avatarType:string, avatarNum:string):string {
+		public loadAvatarFormat(unitId:string, avatarType:string, avatarNum:string):string {
 			var avatarId:string = avatarType + Engine.LINE + avatarNum;
 			var actData:AvatarActionData = AvatarActionData.createAvatarActionData();
 			var actGroup:AvatarActionFormatGroup = this._requestHash_.get(avatarId);
@@ -79,6 +79,11 @@ module engine {
 		}
 
 		public loadAvatarSWF(idName:string, act:string, dir:number) {
+			var key:string = idName + Engine.LINE + act + Engine.LINE + dir;
+			if (this._textureHash_.has(key) == true) {
+				return;
+			}
+
 			var path:string = EngineGlobal.getAvatarAssetsJsonPath(idName, act ,dir);
 			var path2:string = EngineGlobal.getAvatarAssetsImagePath(idName, act, dir);
 			var loader:ILoader = WealthStoragePort.takeLoaderByWealth(path);
@@ -92,10 +97,10 @@ module engine {
 					prio = 1;
 				}
 				if (loader == null) {
-					this._wealthQueue_.addWealth(path, data, null, prio);
+					this._wealthQueue_.addWealth(path, data, prio);
 				}
 				if (loader2 == null) {
-					this._wealthQueue_.addWealth(path2, data, null, prio);
+					this._wealthQueue_.addWealth(path2, data, prio);
 				}
 			} else {
 				this.analyzeSWF(data);
@@ -108,7 +113,7 @@ module engine {
 			if (wealthData.type == WealthConst.BING_WEALTH) {
 				if (loader.data) {
 					var actGroup:AvatarActionFormatGroup = AvatarActionFormatGroup.takeAvatarActionFormatGroup(wealthData.data.actionDataGroup_id);
-					this.analyeAvatarActionFormat(actGroup, new egret.ByteArray(loader.data));
+					this.analyzeAvatarActionFormat(actGroup, new egret.ByteArray(loader.data));
 					actGroup.isLoaded = true;
 					actGroup.isPended = false;
 					actGroup.noticeAvatarActionData();
@@ -122,6 +127,7 @@ module engine {
 					this.analyzeSWF(wealthData.data);
 				}
 			}
+			this._wealthQueue_.removeWealth(wealthData.id);
 			wealthData.dispose();
 		}
 
@@ -129,7 +135,7 @@ module engine {
 
 		}
 
-		private analyeAvatarActionFormat(actGroup:AvatarActionFormatGroup, byte:egret.ByteArray) {
+		private analyzeAvatarActionFormat(actGroup:AvatarActionFormatGroup, byte:egret.ByteArray) {
 			var idName:string = byte.readUTF();
 			actGroup.idName = idName;
 			var len:number = byte.readByte();
@@ -187,8 +193,8 @@ module engine {
 						var h:number = byte.readShort();
 						var tx:number = byte.readShort();
 						var ty:number = byte.readShort();
-						tx = tx - EngineGlobal.AVATAR_IMAGE_WIDTH;
-						ty = ty - EngineGlobal.AVATAR_IMAGE_HEIGHT;
+						tx -= EngineGlobal.AVATAR_IMAGE_WIDTH;
+						ty -= EngineGlobal.AVATAR_IMAGE_HEIGHT;
 						bWidths.push(w);
 						bHeights.push(h);
 						bTxs.push(tx);
@@ -210,15 +216,9 @@ module engine {
 				if (actGroup.hasAction("attack")) {
 					this.addWarmDataFormat("attack", "attack_warm", actGroup);
 				}
-				if (actGroup.hasAction("walk")) {
-					this.addWarmDataFormat("walk", "walk_warm", actGroup, 1);
-				}
-				if (actGroup.hasAction("run")) {
-					this.addWarmDataFormat("run", "run_warm", actGroup, 1);
-				}
 			}
 		}
-		private addWarmDataFormat(copyFrom:string, warmAction:string, actGroup:AvatarActionFormatGroup, replay:number=-1) {
+		private addWarmDataFormat(copyFrom:string, warmAction:string, actGroup:AvatarActionFormatGroup) {
 			var copyFormat:AvatarActionFormat = actGroup.takeAction(copyFrom);
 			if (!copyFormat) {
 				return;
@@ -294,7 +294,7 @@ module engine {
 			var spriteSheet:egret.SpriteSheet = new egret.SpriteSheet(texture);
 			for (var subkey in frames) {
 				var config:any = frames[subkey];
-				var texture:egret.Texture = spriteSheet.createTexture(subkey,config.x,config.y,config.w,config.h,config.offX, config.offY,config.sourceW,config.sourceH);
+				var texture:egret.Texture = spriteSheet.createTexture(subkey,config.x,config.y,config.w,config.h,config.offX,config.offY,config.sourceW,config.sourceH);
 			}
 			return spriteSheet;
 		}

@@ -6,7 +6,6 @@ module engine {
 		public static _recoverIndex_:number = 50;
 
 		public isCreateWarn:boolean = true;
-		public owner:string;
 		public type:string;
 		public isLoaded:boolean = false;	// 加载成功
 		public isPended:boolean = false;	// 加载中
@@ -74,7 +73,7 @@ module engine {
 
 		public recover() {
 			if (this.isDisposed) {
-				return ;
+				return;
 			}
 			AvatarActionFormatGroup._instanceHash_.delete(this.id);
 			if (AvatarActionFormatGroup._recoverQueue_.length < AvatarActionFormatGroup._recoverIndex_) {

@@ -60,23 +60,31 @@ module engine {
 		}
 
 		public loadAvatarPart(avatarType:string, idNum:string, random:number) {
-			var dataId:string = AvatarRequestManager.getInstance().loadAvatar(this.id, avatarType, idNum);
-			var actData:AvatarActionData = AvatarActionData.takeAvatarActionData(dataId);
-            var tmpData:AvatarActionData = this.mainActionData;
-			if (this.mainActionData == null || avatarType == AvatarTypes.BODY_TYPE) {
-				this.mainActionData = actData;
+			var orgData:AvatarActionData = this.bodyPartHash.get(avatarType);
+			if (idNum) {
+				var dataId:string = AvatarRequestManager.getInstance().loadAvatarFormat(this.id, avatarType, idNum);
+				var actData:AvatarActionData = AvatarActionData.takeAvatarActionData(dataId);
+				var tmpData:AvatarActionData = this.mainActionData;
+				if (this.mainActionData == null || avatarType == AvatarTypes.BODY_TYPE) {
+					this.mainActionData = actData;
+					this.mainActionData.currAction = this._actNow_;
+					this.mainActionData.currDir = this._currDir_;
+					if (this._currFrame_ > this.mainActionData.totalFrames) {
+						this._currFrame_ = 0;
+					}
+					if (tmpData) {    // 已有数据更新
+						this.mainActionData.stopFrame = tmpData.stopFrame;
+						this.mainActionData.replay = tmpData.replay;
+					}
+				}
 				this.mainActionData.random = random;
-				this.mainActionData.currAction = this._actNow_;
-				this.mainActionData.currDir = this._currDir_;
-				if (this._currFrame_ > this.mainActionData.totalFrames) {
-					this._currFrame_ = 0;
-				}
-				this.mainActionData.currFrame = this._currFrame_;
-				if (tmpData) {    // 已有数据更新
-                    this.mainActionData.stopFrame = tmpData.stopFrame;
-				}
+				this.bodyPartHash.set(avatarType, actData);
+			} else {
+				this.bodyPartHash.delete(avatarType);
 			}
-			this.bodyPartHash.set(avatarType, actData);
+			if (orgData) {	// 资源回收
+				orgData.recover();
+			}
 		}
 
 		public play(action:string, renderType:number=AvatarRenderTypes.NORMAL_RENDER, stopFrame:number=-1) {
@@ -91,13 +99,13 @@ module engine {
 						if (this._currFrame_ >= this.mainActionData.totalFrames) {
 							this._currFrame_ = 0;
 						}
-						this.mainActionData.currFrame = this._currFrame_;
 						renderType = AvatarRenderTypes.UN_PLAY_NEXT_RENDER;
 					} else {
-						this._currFrame_ = stopFrame != -1 ? stopFrame : 0;
 						this.mainActionData.currAction = action;
-						this.mainActionData.currFrame = this._currFrame_;
+						this._currFrame_ = stopFrame != -1 ? stopFrame : 0;
 					}
+				} else {
+					renderType = AvatarRenderTypes.NORMAL_RENDER;
 				}
 				if (action == ActionConst.DEATH) {
 					this.mainActionData.stopFrame = this.mainActionData.totalFrames - 1;
@@ -138,6 +146,7 @@ module engine {
 								this.play(ActionConst.STAND, AvatarRenderTypes.PLAY_NEXT_RENDER);
 							}
 						}
+						return;
 					}
 				}
 

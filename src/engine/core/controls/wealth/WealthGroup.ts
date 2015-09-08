@@ -1,7 +1,7 @@
 module engine {
 	export class WealthGroup extends Proto {
 
-		public static instanceHash:Map<string, WealthGroup> = new Map<string, WealthGroup>();
+		private static _instanceHash_:Map<string, WealthGroup> = new Map<string, WealthGroup>();
 
 		public type:number = 0;
 		public loadedIndex:number = 0;
@@ -12,7 +12,7 @@ module engine {
 
 		public constructor() {
 			super();
-			WealthGroup.instanceHash.set(this.id, this);
+			WealthGroup._instanceHash_.set(this.id, this);
 			this.type = WealthConst.PRIORITY_LEVEL;
 			this._wealthHash = new Map<string, WealthData>();
 			this._wealthList = [];
@@ -22,29 +22,33 @@ module engine {
 			this._wealthList.sort((a, b) => {
 				if (a.prio > b.prio) {
 					return -1;
-				} else {
+				} else if (a.prio == b.prio) {
     				if (a.time < b.time) {
                         return -1;
-    				}
+    				} else {
+						return 1;
+					}
+				} else {
 					return 1;
 				}
 			});
 		}
 
-		public addWealth(url:string, data:any = null, otherArgs:any = null, prio:number = -1):string {
-			if (this.hasWealth(url) == true) {
-				return null;
+		public addWealth(url:string, data:any = null, prio:number = -1):string {
+			var wealthData:WealthData = this.takeWealthByPath(url);
+			if (wealthData) {
+				wealthData.prio++;	// 多次请求提高优先级
+				return wealthData.id;
 			}
 
-			var wealthData:WealthData = new WealthData();
+			wealthData = new WealthData();
 			wealthData.url = url;
 			wealthData.data = data;
-			wealthData.proto = otherArgs;
 			wealthData.oid = this.id;
 			wealthData.wid = this.oid;
 			wealthData.prio = prio;
 			if (url.indexOf(EngineGlobal.SM_EXTENSION) != -1) {
-				wealthData.prio = 2;
+				wealthData.prio = 10;
 			}
 
 			this._wealthHash.set(wealthData.id, wealthData);
@@ -56,15 +60,19 @@ module engine {
 			return this._wealthHash.get(id);
 		}
 
-		public hasWealth(url:string):boolean {
-            var ret:boolean = false;
-			this._wealthList.forEach(item => {
-				if (item.url == url) {
-                    ret = true;
-					return;
+		public takeWealthByPath(url:string):WealthData {
+			var ret:WealthData = null;
+			for (var k in this._wealthList) {
+				ret = this._wealthList[k];
+				if (ret && ret.url == url) {
+					return ret;
 				}
-			});
-			return ret;
+			}
+			return null;
+		}
+
+		public hasWealth(url:string):boolean {
+			return this.takeWealthByPath(url) != null;
 		}
 
 		public removeWealthById(id:string) {
@@ -79,40 +87,41 @@ module engine {
 
 		public getNextNeedWealthData():WealthData {
 			var ret:WealthData = null;
-			this._wealthList.forEach(wealthData => {
+			for (var k in this._wealthList) {
+				ret = this._wealthList[k];
 				if (this.type == WealthConst.BUBBLE_LEVEL) {	// 顺序执行
-					if(wealthData.isLoaded == false) {
-						if (wealthData.isPended == false) {
-							ret = wealthData;
-							return;
+					if(ret.isLoaded == false) {
+						if (ret.isPended == false) {
+							return ret;
 						} else {
-							return;
+							return null;
 						}
 					}
 				} else {
-					if(wealthData.isLoaded == false && wealthData.isPended == false) {
-						ret = wealthData;
-						return;
+					if(ret.isLoaded == false && ret.isPended == false) {
+						return ret;
 					}
 				}
-			});
-			return ret;
+			}
+			return null;
 		}
 
 		public checkTotalFinish() {
 			this.loadedIndex = 0;
-			this._wealthList.forEach(wealthData => {
+			var wealthData:WealthData = null;
+			for (var k in this._wealthList) {
+				wealthData = this._wealthList[k];
 				if (wealthData.isLoaded == false) {
 					this._loaded = false;
-					return;
+					break;
 				} else {
 					this.loadedIndex++;
 				}
-			});
+			}
 		}
 
 		public dispose() {
-			WealthGroup.instanceHash.delete(this.id);
+			WealthGroup._instanceHash_.delete(this.id);
 			this._wealthHash.clear();
 			this._wealthHash = null;
 			this._wealthList.length = 0;

@@ -1,7 +1,7 @@
 module engine {
 	export class WealthData extends Proto {
 
-		private static instanceHash:Map<string, WealthData> = new Map<string, WealthData>();
+		private static _instanceHash_:Map<string, WealthData> = new Map<string, WealthData>();
 
 		public data:any;
 		public dataFormat:string = egret.URLLoaderDataFormat.TEXT;
@@ -19,15 +19,15 @@ module engine {
 
 		public constructor() {
 			super();
-			WealthData.instanceHash.set(this.id, this);
+			WealthData._instanceHash_.set(this.id, this);
 		}
 
 		public static getWealthData(id:string):WealthData {
-			return WealthData.instanceHash.get(id);
+			return WealthData._instanceHash_.get(id);
 		}
 
 		public static removeWealthData(id:string):boolean {
-			return WealthData.instanceHash.delete(id);
+			return WealthData._instanceHash_.delete(id);
 		}
 
 		public set wid(value:string) {
