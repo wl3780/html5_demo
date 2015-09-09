@@ -1,6 +1,7 @@
 class Main extends egret.DisplayObjectContainer {
 
     private scene:GameScene;
+    private text:egret.TextField;
 
     private all_avatar:Array<string> = ["wcx001","wcx004","wco005","wco001"];
     private all_sex:Array<number> = [1,1,2,2];
@@ -15,7 +16,7 @@ class Main extends egret.DisplayObjectContainer {
 
     public constructor() {
         super();
-        this.addEventListener(egret.Event.ADDED_TO_STAGE,this.onAddToStage,this);
+        this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
     
     private onAddToStage(event:egret.Event) {
@@ -24,14 +25,14 @@ class Main extends egret.DisplayObjectContainer {
 
         this.stage.addEventListener(egret.Event.RESIZE, this.onResize, this);
 
-        RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE,this.onConfigComplete,this);
+        RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.loadConfig("resource/resource.json", "resource/");
     }
 
     private onConfigComplete(event:RES.ResourceEvent) {
-        RES.removeEventListener(RES.ResourceEvent.CONFIG_COMPLETE,this.onConfigComplete,this);
-        RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE,this.onResourceLoadComplete,this);
-        RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR,this.onResourceLoadError,this);
+        RES.removeEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
+        RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
+        RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
         RES.loadGroup("preload");
     }
 
@@ -68,7 +69,7 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.setBlood(100, 500);
         this.scene.mainChar.setNei(200, 800);
 
-        for (var i:number=0; i<0; i++) {
+        for (var i:number=0; i<500; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;
@@ -76,6 +77,8 @@ class Main extends egret.DisplayObjectContainer {
             char.showShadow();
             char.sex = this.all_sex[idx];
             char.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[idx]);
+            char.loadAvatarPart(engine.AvatarTypes.WEAPON_TYPE, this.all_weapon[0]);
+            char.loadAvatarPart(engine.AvatarTypes.WING_TYPE, this.all_wing[0]);
             char.charName = "Robot" + i;
             this.scene.addItem(char, engine.SceneConst.MIDDLE_LAYER);
             this.robot_list.push(char);
@@ -85,6 +88,8 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private loop(evt:egret.Event) {
+        this.text.text = "fps:" + engine.Engine.fps + "\n机器人数：" + this.robot_list.length;
+        
         if (this.robot_list.length <= 0 || egret.getTimer() - this.time_dur < 80) {
             return;
         }
@@ -105,6 +110,11 @@ class Main extends egret.DisplayObjectContainer {
     }
     
     private createHUD() {
+        this.text = new egret.TextField();
+        this.text.size = 18;
+        this.text.y = 90;
+        this.addChild(this.text);
+
         this.createButton(this.tapFunc, "变身", 210, 0);
         this.createButton(this.attackFunc, "攻击", 320, 0);
         this.createButton(this.skillFunc, "施法", 430, 0);

@@ -26,6 +26,8 @@ module engine {
 				FPSUtils.lost_fps = (temp > 0) ? temp : 0;
 				FPSUtils.count = 0;
 				FPSUtils.fpsTime = egret.getTimer();
+
+				Engine.fps = FPSUtils.fps;
 			}
 		}
 

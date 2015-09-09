@@ -16,6 +16,7 @@ module engine {
         public static enabled:boolean = true;
         public static compress:boolean = true;
         public static sceneClickEnabled:boolean = true;
+        public static fps:number = 0;
 
         private static instance_index:number = 2147483647;
         private static pointRecoverList:Array<egret.Point> = [];

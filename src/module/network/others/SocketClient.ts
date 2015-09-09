@@ -17,6 +17,7 @@ class SocketClient extends egret.WebSocket {
 
 	public constructor(host:string=null, port:number=0) {
         super(host, port);
+
         this._buf = new egret.ByteArray();
         this.type = egret.WebSocket.TYPE_BINARY;
         this.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onMessage, this);
@@ -51,8 +52,8 @@ class SocketClient extends egret.WebSocket {
             try {
                 this.writeBytes(bytes);
                 this.flush();
-            } catch (e:Error) {
-                console.error(e.message);
+            } catch (e) {
+                console.error(e);
             }
         }
     }
@@ -99,7 +100,7 @@ class SocketClient extends egret.WebSocket {
             this._buf.readBytes(bytes, 0, packLen-2);
 
             var event:SocketEvent = new SocketEvent(SocketEvent.SERVER_SUCCESS_PARSE);
-            event.params = {packId:packId, packData:bytes};
+            event.params = [packId, bytes];
             this.dispatchEvent(event);
         }
     }
