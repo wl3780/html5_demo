@@ -173,7 +173,7 @@ module engine {
 				this.getScale9Grid(source, this.nonce, this.endPoint, breakStep);
 			}
 			var array:Array<egret.Point> = this.cleanArray();
-            console.log("*****************寻路时间：", (egret.getTimer() - t), "路径长: ", array.length, "*******************", "\n\n");
+            console.log("*****************寻路时间：" + (egret.getTimer() - t) + "路径长: " + array.length + "*******************" + "\n");
 			return array;
 		}
 

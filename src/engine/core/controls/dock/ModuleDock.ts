@@ -1,7 +1,9 @@
 module engine {
 	export class ModuleDock {
 
+		/** 默认网络模块名称 */
 		public static NETWORK_MODULE_NAME:string = Engine.SIGN + "NetworkModule";
+		/** 发送匿名消息使用模块名称 */
 		public static DEFAULT_MODULE_NAME:string = Engine.SIGN + "DefaultModule";
 
 		private static moduleList:Array<string> = [];
@@ -14,6 +16,7 @@ module engine {
 
 		public static setup(moduleConst:any, networkModule:any) {
 			var netModule:INetworkModule = new networkModule();
+			netModule.name = ModuleDock.NETWORK_MODULE_NAME;
 			netModule.register();
 
 			var kName:string = null;

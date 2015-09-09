@@ -7,8 +7,8 @@ module engine {
 
         stop();
 
-        onBodyRender(renderType:string, avatarType:string, bitmapData:egret.Texture, tx:number, ty:number);
+        onBodyRender(renderType:string, avatarType:string, texture:egret.Texture, tx:number, ty:number);
 
-        onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number);
+        onEffectRender(oid:string, renderType:string, texture:egret.Texture, tx:number, ty:number);
     }
 }

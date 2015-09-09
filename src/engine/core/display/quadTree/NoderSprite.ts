@@ -1,7 +1,7 @@
 module engine {
 	export class NoderSprite extends DisplaySprite implements INoderDisplay {
 
-		protected _tid:string;
+		protected _tid_:string;
 
 		private _node:NodeRect;
 		private _tree:NodeTree;
@@ -14,7 +14,7 @@ module engine {
 		}
 
 		public registerNodeTree(tid:string) {
-			this._tid = tid;
+			this._tid_ = tid;
 			this._tree = NodeTreePool.getInstance().take(tid);
 			this._initialized = true;
 			this.activate();
@@ -93,8 +93,8 @@ module engine {
 			return this._isActivate;
 		}
 
-		public get tid():string {
-			return this._tid;
+		public get tid_():string {
+			return this._tid_;
 		}
 
 		public push(node:NodeRect) {
@@ -121,6 +121,7 @@ module engine {
 
 		public dispose() {
 			this.unactivate();
+			this._tid_ = null;
 			this._node = null;
 			this._tree = null;
 			super.dispose();

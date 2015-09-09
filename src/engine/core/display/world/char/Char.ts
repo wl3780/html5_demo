@@ -244,9 +244,9 @@ module engine {
 				var dis:number = egret.Point.distance(this._tarPoint_, this.point);
 				var pass:number;
 				if (this.dir == DirConst.TOP || this.dir == DirConst.BOTTOM) {
-					pass = TileConst.TILE_HEIGHT * 2;
+					pass = TileConst.TILE_HEIGHT;
 				} else {
-					pass = TileConst.TILE_WIDTH * 2;
+					pass = TileConst.TILE_WIDTH;
 				}
 				if (dis < pass) {
 					this.play(ActionConst.WALK);

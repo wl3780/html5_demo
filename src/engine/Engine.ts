@@ -21,11 +21,13 @@ module engine {
         private static pointRecoverList:Array<egret.Point> = [];
         private static rectRecoverList:Array<egret.Rectangle> = [];
 
-        public static setup(target:egret.DisplayObjectContainer, path:string, lang:string="zh_CN", ver:string="v1.0"):void {
+        public static setup(target:egret.DisplayObjectContainer, moduleClass:any, netClass:any, path:string, lang:string="zh_CN", ver:string="v1.0"):void {
             Engine.stage = target.stage;
             EngineGlobal.assetsHost = path;
             EngineGlobal.language = lang;
             EngineGlobal.version = ver;
+            FPSUtils.setup(target.stage);
+            ModuleDock.setup(moduleClass, netClass);
         }
 
         public static getSoleId():string {

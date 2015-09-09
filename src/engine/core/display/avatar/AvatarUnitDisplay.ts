@@ -27,15 +27,17 @@ module engine {
 			return AvatarUnitDisplay._instanceHash_.get(unitId);
 		}
 
-		public hideBody(value:boolean) {
+		public set hideBody(value:boolean) {
 			this._hide_body_ = value;
+			this.updateBitmapDepth();
 		}
 
-		public hideWing(value:boolean) {
+		public set hideWing(value:boolean) {
 			this._hide_wing_ = value;
+			this.updateBitmapDepth();
 		}
 
-		public hideTitle(value:boolean) {
+		public set hideTitle(value:boolean) {
 			this._hide_title_ = value;
 		}
 
@@ -209,7 +211,13 @@ module engine {
 			depthInfos.forEach(act => {
 				bmp = this["bmd_"+act];
 				if (bmp) {
-					this.addChildAt(bmp, 0);
+					if (this._hide_body_ || (this._hide_wing_ && act == AvatarTypes.WING_TYPE)) {
+						if (bmp.parent) {
+							bmp.parent.removeChild(bmp);
+						}
+					} else {
+						this.addChildAt(bmp, 0);
+					}
 				}
 			});
 		}

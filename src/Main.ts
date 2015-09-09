@@ -20,9 +20,9 @@ class Main extends egret.DisplayObjectContainer {
     
     private onAddToStage(event:egret.Event) {
         egret.Profiler.getInstance().run();
-        this.stage.addEventListener(egret.Event.RESIZE, this.onResize, this);
+        engine.Engine.setup(this, ModuleConst, NetworkModule, "");
 
-        engine.Engine.setup(this, "");
+        this.stage.addEventListener(egret.Event.RESIZE, this.onResize, this);
 
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE,this.onConfigComplete,this);
         RES.loadConfig("resource/resource.json", "resource/");

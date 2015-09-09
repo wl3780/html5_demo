@@ -62,6 +62,9 @@ module engine {
 		public get name():string {
 			return this._name_;
 		}
+		public set name(value:string) {
+			this._name_ = value;
+		}
 
 		public get lock():boolean {
 			return this._lock_;
