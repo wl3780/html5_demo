@@ -54,7 +54,7 @@ module engine {
 			}
 			this._tarPoint_ = value.shift();
 			var dis:number = egret.Point.distance(this._tarPoint_, this.point);
-			if (dis <= TileConst.WH && value.length == 0) {
+			if (dis < TileConst.WH && value.length == 0) {
 				this._CharMoveEnd_();
 				return;
 			}

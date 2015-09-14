@@ -5,7 +5,8 @@ module engine {
 
 		public static _instance_:AvatarRenderManager;
 
-		private interValue:number = 0;
+		private checkTime:number = 0;
+		private interTime:number = 0;
 		private renderIndex:number = 0;
 
 		private unitQueue:Array<AvatarUnit> = [];
@@ -52,11 +53,16 @@ module engine {
 				return ;
 			}
 
+			if (egret.getTimer() - this.checkTime >= 1000) {
+				this.checkTime = egret.getTimer();
+				this.checkRenderFps();
+			}
+
 			var needTime:number = 30;
-			if(egret.getTimer() - this.interValue < needTime) {
+			if (egret.getTimer() - this.interTime < needTime) {
 				return ;
 			}
-			this.interValue = egret.getTimer();
+			this.interTime = egret.getTimer();
 
 			this.renderIndex++;
 			if(this.renderIndex >= AvatarRenderManager.renderNum) {
@@ -66,7 +72,7 @@ module engine {
 			var avatarUnit:AvatarUnit = null;
 			var avatarDisplay:IAvatar = null;
 			var queueIndex:number = 0;
-			while(queueIndex < this.unitQueue.length) {
+			while (queueIndex < this.unitQueue.length) {
 				avatarUnit = this.unitQueue[queueIndex];
 				avatarDisplay = AvatarUnitDisplay.takeUnitDisplay(avatarUnit.oid);
 				if ((avatarUnit.renderIndex == this.renderIndex) || (avatarDisplay == Scene.scene.mainChar)) {
@@ -74,6 +80,23 @@ module engine {
 					avatarUnit.onEffectRender();
 				}
 				queueIndex++;
+			}
+		}
+
+		private checkRenderFps() {
+			var num:number = 2;
+			if (Engine.fps < 10) {
+				num = 12;
+			} else if (Engine.fps < 20) {
+				num = 8;
+			} else if (Engine.fps < 30) {
+				num = 4;
+			}
+			if (num != AvatarRenderManager.renderNum) {
+				this.unitQueue.forEach(item => {
+					item.renderIndex = Math.random() * num >> 0;
+				});
+				AvatarRenderManager.renderNum = num;
 			}
 		}
 

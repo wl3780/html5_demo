@@ -69,7 +69,7 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.setBlood(100, 500);
         this.scene.mainChar.setNei(200, 800);
 
-        for (var i:number=0; i<500; i++) {
+        for (var i:number=0; i<0; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;

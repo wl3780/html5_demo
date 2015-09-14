@@ -222,6 +222,11 @@ module engine {
                 return;
             }
             var needTime:number = 300;
+            if (Engine.fps < 10) {
+                needTime = 1200;
+            } else if (Engine.fps < 20) {
+                needTime = 900;
+            }
             if (egret.getTimer()-this._depthTime < needTime) {
                 return;
             }
