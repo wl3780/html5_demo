@@ -11,7 +11,7 @@ module engine {
 		private static _stage:egret.Stage;
 
 		public static setup(s:egret.Stage) {
-			s.addEventListener(egret.Event.ENTER_FRAME,FPSUtils.onEnterFrame,null);
+			s.addEventListener(egret.Event.ENTER_FRAME, FPSUtils.onEnterFrame, null);
 			FPSUtils.fps = s.frameRate;
 			FPSUtils._stage = s;
 			FPSUtils.fpsTime = egret.getTimer();

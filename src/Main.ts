@@ -69,7 +69,27 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.setBlood(100, 500);
         this.scene.mainChar.setNei(200, 800);
 
-        for (var i:number=0; i<0; i++) {
+        this.createRobots();
+
+        this.stage.addEventListener(egret.Event.ENTER_FRAME, this.loop, this);
+    }
+
+    private createRobots() {
+        for (var i:number=0; i<200; i++) {
+            var idx:number = Math.random() * this.all_avatar.length >> 0;
+            var char:engine.Char = new engine.Char();
+            char.x = 1000 + ((i%25>>0) + 0.5) * engine.TileConst.TILE_WIDTH * 2;
+            char.y = 1000 + ((i/25>>0) + 0.5) * engine.TileConst.TILE_HEIGHT * 4;
+            char.showShadow();
+            char.sex = this.all_sex[idx];
+            char.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[idx]);
+            char.loadAvatarPart(engine.AvatarTypes.WEAPON_TYPE, this.all_weapon[0]);
+            char.loadAvatarPart(engine.AvatarTypes.WING_TYPE, this.all_wing[0]);
+            char.charName = "Robot" + i;
+            this.scene.addItem(char, engine.SceneConst.MIDDLE_LAYER);
+        }
+        /*
+        for (var i:number=0; i<200; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = this.scene.mainChar.x + Math.random() * 500 >> 0;
@@ -83,8 +103,7 @@ class Main extends egret.DisplayObjectContainer {
             this.scene.addItem(char, engine.SceneConst.MIDDLE_LAYER);
             this.robot_list.push(char);
         }
-
-        this.stage.addEventListener(egret.Event.ENTER_FRAME, this.loop, this);
+        */
     }
 
     private loop(evt:egret.Event) {
