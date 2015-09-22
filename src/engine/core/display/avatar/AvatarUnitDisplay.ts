@@ -12,11 +12,11 @@ module engine {
 		protected bmd_mid:egret.Bitmap;
 		protected bmd_wid:egret.Bitmap;
 		protected bmd_wgid:egret.Bitmap;
-		protected bmd_eid:egret.Bitmap;
 
 		protected _hide_body_:boolean = false;
 		protected _hide_wing_:boolean = false;
 		protected _hide_title_:boolean = false;
+		protected _effectHash_:Map<string, egret.Bitmap> = new Map<string, egret.Bitmap>();
 
 		public constructor() {
 			super();
@@ -54,6 +54,10 @@ module engine {
 			this._unit_.loadAvatarPart(type, idNum, random);
 		}
 
+		public loadEffect(idNum:string, type:string=AvatarRenderTypes.BODY_TOP_EFFECT, random:number=0) {
+			this._unit_.loadEffect(idNum, type, random);
+		}
+
 		public play(action:string, renderType:number=AvatarRenderTypes.NORMAL_RENDER, playEndFunc:Function=null, stopFrame:number=-1) {
 			if (action == ActionConst.DEATH) {
 				renderType = AvatarRenderTypes.PLAY_NEXT_RENDER;
@@ -66,37 +70,29 @@ module engine {
 
 		}
 
-		public onBodyRender(renderType:string, avatarType:string, bitmapData:egret.Texture, tx:number, ty:number) {
+		public onBodyRender(avatarType:string, bitmapData:egret.Texture, tx:number, ty:number) {
 			if (bitmapData) {
 				var bitmap:egret.Bitmap = null;
 				if (this._hide_body_ == false) {
-					if (renderType == AvatarRenderTypes.BODY_TYPE) {
-						switch (avatarType) {
-							case AvatarTypes.BODY_TYPE:
-								if (!this.bmd_mid) {
-									this.bmd_mid = new egret.Bitmap();
-								}
-								bitmap = this.bmd_mid;
-								break;
-							case AvatarTypes.WEAPON_TYPE:
-								if (!this.bmd_wid) {
-									this.bmd_wid = new egret.Bitmap();
-								}
-								bitmap = this.bmd_wid;
-								break;
-							case AvatarTypes.WING_TYPE:
-								if (!this.bmd_wgid) {
-									this.bmd_wgid = new egret.Bitmap();
-								}
-								bitmap = this.bmd_wgid;
-								break;
-						}
-					} else if (renderType == AvatarRenderTypes.BODY_EFFECT) {
-						if (!this.bmd_eid) {
-							this.bmd_eid = new egret.Bitmap();
-							this.addChild(this.bmd_eid);
-						}
-						bitmap = this.bmd_eid;
+					switch (avatarType) {
+						case AvatarTypes.BODY_TYPE:
+							if (!this.bmd_mid) {
+								this.bmd_mid = new egret.Bitmap();
+							}
+							bitmap = this.bmd_mid;
+							break;
+						case AvatarTypes.WEAPON_TYPE:
+							if (!this.bmd_wid) {
+								this.bmd_wid = new egret.Bitmap();
+							}
+							bitmap = this.bmd_wid;
+							break;
+						case AvatarTypes.WING_TYPE:
+							if (!this.bmd_wgid) {
+								this.bmd_wgid = new egret.Bitmap();
+							}
+							bitmap = this.bmd_wgid;
+							break;
 					}
 				}
 
@@ -115,31 +111,45 @@ module engine {
 						this.bmd_wgid.texture = null;
 					}
 				}
+
                 this.setBitmapValue(bitmap, bitmapData, -tx, -ty);
                 if (bitmap.texture && !bitmap.parent) {
                     this.updateBitmapDepth();
                 }
 			} else {
-				if (renderType == AvatarRenderTypes.BODY_TYPE) {
-					if (avatarType == AvatarTypes.BODY_TYPE && this.bmd_mid) {
-						this.bmd_mid.texture = null;
-					}
-					if (avatarType == AvatarTypes.WEAPON_TYPE && this.bmd_wid) {
-						this.bmd_wid.texture = null;
-					}
-					if (avatarType == AvatarTypes.WING_TYPE && this.bmd_wgid) {
-						this.bmd_wgid.texture = null;
-					}
-				} else if (renderType == AvatarRenderTypes.BODY_EFFECT) {
-					if (this.bmd_eid) {
-						this.bmd_eid.texture = null;
-					}
+				if (avatarType == AvatarTypes.BODY_TYPE && this.bmd_mid) {
+					this.bmd_mid.texture = null;
+				}
+				if (avatarType == AvatarTypes.WEAPON_TYPE && this.bmd_wid) {
+					this.bmd_wid.texture = null;
+				}
+				if (avatarType == AvatarTypes.WING_TYPE && this.bmd_wgid) {
+					this.bmd_wgid.texture = null;
 				}
 			}
 		}
 
-		public onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number) {
-
+		public onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number, remove:boolean=false) {
+			var bitmap:egret.Bitmap;
+			if (bitmapData && this._effectHash_.has(oid) == false) {
+				bitmap = new egret.Bitmap();
+				this._effectHash_.set(oid, bitmap);
+			} else {
+				bitmap = this._effectHash_.get(oid);
+			}
+			if (remove) {	// 移除特效
+				this._effectHash_.delete(oid);
+			} else if (bitmap) {
+				bitmap.name = renderType + "#" + (-tx) + "#" + (-ty);
+				if (renderType == AvatarRenderTypes.BODY_TOP_EFFECT) {
+					Scene.scene.topLayer.addChild(bitmap);
+				} else if (renderType == AvatarRenderTypes.BODY_BOTTOM_EFFECT) {
+					Scene.scene.bottomLayer.addChild(bitmap);
+				} else if (renderType == AvatarRenderTypes.BODY_EFFECT) {
+					this.addChild(bitmap);
+				}
+			}
+			this.setBitmapValue(bitmap, bitmapData, -tx, -ty);
 		}
 
 		public get dir():number {
@@ -241,8 +251,13 @@ module engine {
 			if (this.stageIntersects) {
 				if (bitmap.texture != bitmapData) {
 					bitmap.texture = bitmapData;
-                    bitmap.x = vx;
-                    bitmap.y = vy;
+				}
+				if (bitmap.parent == this) {
+					bitmap.x = vx;
+					bitmap.y = vy;
+				} else {
+					bitmap.x = this.x + vx;
+					bitmap.y = this.y + vy;
 				}
 			}
 		}

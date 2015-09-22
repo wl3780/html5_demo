@@ -10,7 +10,6 @@ module engine {
 		private _nodeC:NodeRect;
 		private _nodeD:NodeRect;
 		private _nodes:Map<string, INoder>;
-		private _length:number = 0;
 		private _tree:NodeTree;
 
 		public constructor() {
@@ -110,17 +109,11 @@ module engine {
 		}
 
 		public addChild(id:string, noder:INoder) {
-			if (this._nodes.has(id) == false) {
-				this._nodes.set(id, noder);
-				this._length++;
-			}
+			this._nodes.set(id, noder);
 		}
 
 		public removeChild(id:string) {
-			if (this._nodes.has(id) == true) {
-				this._nodes.delete(id);
-				this._length--;
-			}
+			this._nodes.delete(id);
 		}
 
 		public get nodeA():NodeRect {
@@ -140,7 +133,7 @@ module engine {
 		}
 
 		public get length():number {
-			return this._length;
+			return this._nodes.size;
 		}
 
 		public get dic():Map<string, INoder> {

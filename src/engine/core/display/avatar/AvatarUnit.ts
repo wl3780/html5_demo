@@ -23,12 +23,15 @@ module engine {
 		private _effectRenderTime_:number = 0;
 
 		private bodyPartHash:Map<string, AvatarActionData>;
+		private effectHash:Map<string, AvatarActionData>;
 
 		public constructor() {
 			super();
 			this.priorLoadQueue = [ActionConst.STAND];
 			this.renderIndex = Math.random() * AvatarRenderManager.renderNum >> 0;
 			this.bodyPartHash = new Map<string, AvatarActionData>();
+			this.effectHash = new Map<string, AvatarActionData>();
+
 			AvatarUnit._instanceHash_.set(this.id, this);
 			AvatarRenderManager.getInstance().addUnit(this);
 		}
@@ -84,6 +87,20 @@ module engine {
 			}
 			if (orgData) {	// 资源回收
 				orgData.recover();
+			}
+		}
+
+		public loadEffect(idNum:string, type:string, random:number=0) {
+			if (idNum) {
+				var dataId:string = AvatarRequestManager.getInstance().loadAvatarFormat(this.id, AvatarTypes.EFFECT_TYPE, idNum);
+				var actData:AvatarActionData = AvatarActionData.takeAvatarActionData(dataId);
+				actData.random = random;
+				actData.currAction = ActionConst.STAND;
+				actData.currDir = this._currDir_;
+				actData.currFrame = 0;
+				actData.proto = {type:type};
+
+				this.effectHash.set(actData.idName, actData);
 			}
 		}
 
@@ -150,9 +167,9 @@ module engine {
 					}
 				}
 
-				var durTime:number = this.mainActionData.currInterval;
+				var renderTime:number = this.mainActionData.currInterval;
 				var passTime:number = egret.getTimer() - this._bodyRenderTime_;
-				if (passTime  - durTime >= -1 || renderType) {
+				if (passTime  - renderTime >= -1 || renderType) {
 					this.bodyPartHash.forEach(actData => {
 						if (actData.isReady) {
 							actData.currAction = this._actNow_;
@@ -161,25 +178,22 @@ module engine {
 							var bmd:egret.Texture = actData.getBitmapData(this._currDir_, this._currFrame_);
 							var tx:number = actData.getBitmapDataOffsetX(this._currDir_, this._currFrame_);
 							var ty:number = actData.getBitmapDataOffsetY(this._currDir_, this._currFrame_);
-							if (actData.type == AvatarTypes.EFFECT_TYPE) {
-								owner.onBodyRender(AvatarRenderTypes.BODY_EFFECT, actData.type, bmd, tx, ty);
-							} else {
-								owner.onBodyRender(AvatarRenderTypes.BODY_TYPE, actData.type, bmd, tx, ty);
-							}
+							// 渲染回调
+							owner.onBodyRender(actData.type, bmd, tx, ty);
 						}
 					});
                     if (this.renderFunc) {
                         this.renderFunc.apply(owner, null);
                     }
 				}
-				if (passTime - durTime >= 0 || renderType == AvatarRenderTypes.PLAY_NEXT_RENDER) {
+				if (passTime - renderTime >= 0 || renderType == AvatarRenderTypes.PLAY_NEXT_RENDER) {
 					if (this.skillFrameFunc && this._currFrame_ == this.mainActionData.skillFrame && (this._actNow_ == ActionConst.ATTACK || this._actNow_ == ActionConst.SKILL)) {
 						this.skillFrameFunc.apply(owner, null);
 					}
 					if (this.hitFrameFunc && this._currFrame_ == this.mainActionData.hitFrame) {
 						this.hitFrameFunc.apply(owner, null);
 					}
-                    //console.log(this._actNow_+":"+this._currFrame_+"--"+durTime);    // 调试代码
+                    //console.log(this._actNow_+":"+this._currFrame_+"--"+renderTime);    // 调试代码
 					if (this._actNow_ != ActionConst.AttackWarm) {
 						this._currFrame_++;
 					}
@@ -188,8 +202,45 @@ module engine {
 			}
 		}
 
-		public onEffectRender(renderType:number=AvatarRenderTypes.NORMAL_RENDER) {
+		public onEffectRender() {
+			var owner:IAvatar = AvatarUnitDisplay.takeUnitDisplay(this.oid);
+			if (owner == null) {
+				return;
+			}
+			this.effectHash.forEach(actData => {
+				if (actData.isReady) {
+					if (actData.currFrame >= actData.totalFrames) {
+						if (egret.getTimer() - actData.renderTime < actData.currInterval) {
+							return;
+						}
+						if (actData.stopFrame != -1) {
+							actData.currFrame = actData.stopFrame;
+						} else if (actData.replay == -1) {
+							actData.currFrame = 0;
+						} else {
+							// 特效播放完毕，清除回收
+							owner.onEffectRender(actData.id, null, null, 0, 0, true);
+							this.effectHash.delete(actData.idName);
+							actData.recover();
+							return;
+						}
+					}
 
+					var renderTime:number = actData.currInterval;
+					var passTime:number = egret.getTimer() - actData.renderTime;
+					if (passTime - renderTime >= 0) {
+						actData.currDir = this._currDir_;
+						var bmd:egret.Texture = actData.getBitmapData(this._currDir_, actData.currFrame);
+						var tx:number = actData.getBitmapDataOffsetX(this._currDir_, actData.currFrame);
+						var ty:number = actData.getBitmapDataOffsetY(this._currDir_, actData.currFrame);
+						// 渲染回调
+						owner.onEffectRender(actData.id, actData.proto.type, bmd, tx, ty);
+
+						actData.currFrame++;
+						actData.renderTime = egret.getTimer();
+					}
+				}
+			});
 		}
 
 		public get action():string {

@@ -13,6 +13,7 @@ module engine {
 		public isDisposed:Boolean = false;
 		public stopFrame:number = -1;
 		public replay:number = 0;
+		public renderTime:number = 0;	// 上一次的渲染时间
 
 		private _avatarDataFormatGroup_id_:string;
 		private _currAction_:string = ActionConst.STAND;
@@ -55,6 +56,10 @@ module engine {
 			this.replay = this._actionFormat_.replay;
 
 			this.loadActSWF(this._currAction_, this._currDir_);	// 优先加载当前动作
+              if (this.type == AvatarTypes.EFFECT_TYPE) {
+                  return;
+              }
+			
 			var unit:AvatarUnit = AvatarUnit.takeAvatarUnit(this.oid);
 			if (unit && unit.priorLoadQueue) {
 				var queue:Array<string> = unit.priorLoadQueue.slice(0);
@@ -62,7 +67,7 @@ module engine {
 					queue.unshift(this._currAction_);
 				}
 				var avatar:IAvatar = AvatarUnitDisplay.takeUnitDisplay(unit.oid);
-				if (avatar && (avatar.type == CharTypes.MAIN_CHAR || avatar.type == CharTypes.CHAR)) {
+				if (avatar && avatar.type == CharTypes.MAIN_CHAR) {
 					queue.forEach(act => {
 						for (var i=0; i<8; i++) {
 							this.loadActSWF(act, i);
@@ -161,6 +166,9 @@ module engine {
 			return this._totalFrames_;
 		}
 
+		public get currFrame():number {
+			return this._currFrame_;
+		}
 		public set currFrame(value:number) {
 			this._currFrame_ = value;
 		}
@@ -186,6 +194,11 @@ module engine {
 			AvatarActionData._instanceHash_.delete(this.id);
 			if (AvatarActionData._recoverQueue_.length < AvatarActionData._recoverIndex_) {
 				AvatarActionData._recoverQueue_.push(this);
+				this.isReady = false;
+				this.stopFrame = -1;
+				this.replay = 0;
+				this._actionGroup_ = null;
+				this._actionFormat_ = null;
 			} else {
 				this.dispose();
 			}

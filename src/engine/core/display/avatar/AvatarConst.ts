@@ -16,14 +16,6 @@ module engine {
          * wgid
          */
         public static WING_TYPE:string = "wgid";
-        /**
-         * midm
-         */
-        public static MOUNT_TYPE:string = "midm";
-        /**
-         * fid
-         */
-        public static FLY_TYPE:string = "fid";
 
         public static depthBaseHash:Array<Array<string>> = [
             ["wgid", "mid", "wid"],
@@ -52,8 +44,9 @@ module engine {
 
 module engine {
     export class AvatarRenderTypes {
-        public static BODY_TYPE:string = "body_type";
         public static BODY_EFFECT:string = "body_effect";
+        public static BODY_TOP_EFFECT:string = "body_top_effect";
+        public static BODY_BOTTOM_EFFECT:string = "body_bottom_effect";
 
         /** 0 */
         public static NORMAL_RENDER:number = 0;

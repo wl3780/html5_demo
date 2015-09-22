@@ -1,5 +1,12 @@
 class Main extends egret.DisplayObjectContainer {
 
+    private pu_gong:string = "jn10010";
+    private zhanshi_cisha:string = "jn10030";
+    private zhanshi_banyue:string = "jn10040";
+    private zhanshi_chongzhuang:string = "jn10050";
+    private zhanshi_liehuo:string = "jn10060";
+    private zhanshi_zhuri:string = "jn10072";
+
     private scene:GameScene;
     private text:egret.TextField;
 
@@ -75,7 +82,7 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private createRobots() {
-        for (var i:number=0; i<200; i++) {
+        for (var i:number=0; i<0; i++) {
             var idx:number = Math.random() * this.all_avatar.length >> 0;
             var char:engine.Char = new engine.Char();
             char.x = 1000 + ((i%25>>0) + 0.5) * engine.TileConst.TILE_WIDTH * 2;
@@ -163,6 +170,7 @@ class Main extends egret.DisplayObjectContainer {
 
     private attackFunc() {
         this.scene.mainChar.play(engine.ActionConst.ATTACK, engine.AvatarRenderTypes.PLAY_NEXT_RENDER);
+        this.scene.mainChar.loadEffect(this.zhanshi_zhuri);
     }
 
     private skillFunc() {

@@ -41,33 +41,28 @@ module engine {
 					var bmd:egret.Texture = actData.getBitmapData(dir, frame);
 					var tx:number = actData.getBitmapDataOffsetX(dir, frame);
 					var ty:number = actData.getBitmapDataOffsetY(dir, frame);
-					if (actData.type == AvatarTypes.EFFECT_TYPE) {
-						this.onBodyRender(AvatarRenderTypes.BODY_EFFECT, actData.type, bmd, tx, ty);
-					} else {
-						this.onBodyRender(AvatarRenderTypes.BODY_TYPE, actData.type, bmd, tx, ty);
-					}
+					// 渲染回调
+					this.onBodyRender(actData.type, bmd, tx, ty);
 				}
 			}
 		}
 
-		public onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number) {
+		public onEffectRender(oid:string, renderType:string, bitmapData:egret.Texture, tx:number, ty:number, remove:boolean=false) {
 
 		}
 
-		public onBodyRender(renderType:string, avatarType:string, bitmapData:egret.Texture, tx:number, ty:number) {
-			if (renderType == AvatarRenderTypes.BODY_TYPE && avatarType == AvatarTypes.BODY_TYPE) {
-				if (bitmapData) {
-					if (this.bmd_mid == null) {
-						this.bmd_mid = new egret.Bitmap();
-						this.addChild(this.bmd_mid);
-					}
-					this.bmd_mid.texture = bitmapData;
-					this.bmd_mid.x = -tx;
-					this.bmd_mid.y = -ty;
-				} else {
-					if (this.bmd_mid) {
-						this.bmd_mid.texture = null;
-					}
+		public onBodyRender(avatarType:string, bitmapData:egret.Texture, tx:number, ty:number) {
+			if (bitmapData) {
+				if (this.bmd_mid == null) {
+					this.bmd_mid = new egret.Bitmap();
+					this.addChild(this.bmd_mid);
+				}
+				this.bmd_mid.texture = bitmapData;
+				this.bmd_mid.x = -tx;
+				this.bmd_mid.y = -ty;
+			} else {
+				if (this.bmd_mid) {
+					this.bmd_mid.texture = null;
 				}
 			}
 		}
