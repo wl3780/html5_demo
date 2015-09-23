@@ -1,5 +1,8 @@
 class Main extends egret.DisplayObjectContainer {
 
+    private attack_time:number = 340;
+    private skill_time:number = 600;
+
     private pu_gong:string = "jn10010";
     private zhanshi_cisha:string = "jn10030";
     private zhanshi_banyue:string = "jn10040";
@@ -70,7 +73,7 @@ class Main extends egret.DisplayObjectContainer {
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.BODY_TYPE, this.all_avatar[this.main_avatar_index]);
         this.scene.mainChar.sex = this.all_sex[this.main_avatar_index];
         this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.WEAPON_TYPE, this.all_weapon[0]);
-        this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.WING_TYPE, this.all_wing[0]);
+        //this.scene.mainChar.loadAvatarPart(engine.AvatarTypes.WING_TYPE, this.all_wing[0]);
         this.scene.mainChar.showShadow();
         this.scene.mainChar.charName = "西门大官人";
         this.scene.mainChar.setBlood(100, 500);
@@ -170,7 +173,7 @@ class Main extends egret.DisplayObjectContainer {
 
     private attackFunc() {
         this.scene.mainChar.play(engine.ActionConst.ATTACK, engine.AvatarRenderTypes.PLAY_NEXT_RENDER);
-        this.scene.mainChar.loadEffect(this.zhanshi_zhuri);
+        this.scene.mainChar.loadEffect(this.zhanshi_liehuo);
     }
 
     private skillFunc() {

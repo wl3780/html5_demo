@@ -170,7 +170,7 @@ module engine {
 					actionFormat.intervalTimes.push(actionSpeed + interval);
 					actionFormat.totalTime += actionSpeed + interval;
 					frameIndex++;
-				}
+                } console.log(idName + "_" + actionName + ":" + actionFormat.intervalTimes);
 
 				var dirIndex:number = 0;
 				while (dirIndex < totalDir) {

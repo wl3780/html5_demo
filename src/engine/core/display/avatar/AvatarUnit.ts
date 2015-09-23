@@ -140,10 +140,12 @@ module engine {
 
 		public onBodyRender(renderType:number=AvatarRenderTypes.NORMAL_RENDER) {
             var owner:IAvatar = AvatarUnitDisplay.takeUnitDisplay(this.oid);
-            if (owner == null) {
-                return;
-            }
+			if (owner == null) {
+				return;
+			}
 			if (this.mainActionData && this.mainActionData.isReady) {
+				this.mainActionData.currFrame = this._currFrame_;
+
 				if (this._currFrame_ >= this.mainActionData.totalFrames) {
 					if (egret.getTimer() - this._bodyRenderTime_ < this.mainActionData.currInterval) {
 						return;

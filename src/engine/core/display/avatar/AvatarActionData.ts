@@ -83,7 +83,7 @@ module engine {
 
 		public get currInterval():number {
 			if (this._actionFormat_) {
-                var frame:number = this._currFrame_;
+                var frame:number = this._currFrame_ - 1;
 				if (frame <= -1) {
 					return 0;
 				}
